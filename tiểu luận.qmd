@@ -1,0 +1,705 @@
+---
+title: "TIỂU LUẬN"
+subtitle: "XÂY DỰNG MÔ HÌNH DỰ BÁO CHI PHÍ BỒI THƯỜNG BẢO HIỂM"
+author:
+  - name: "Phan Thị Quế Trân (MSSV: 2521001108)"
+  - name: "Nguyễn Ngọc Phương Thảo (MSSV: 2521001099)"
+date: today
+date-format: "DD/MM/YYYY"
+
+# ==============================================================================
+# 1. TRÍCH DẪN TÀI LIỆU THAM KHẢO THEO CHUẨN APA 7TH EDITION
+# ==============================================================================
+bibliography: references.bib
+csl: apa.csl
+link-citations: true
+
+# ==============================================================================
+# 2. ĐÁNH SỐ TIÊU ĐỀ & MỤC LỤC TỰ ĐỘNG
+# ==============================================================================
+number-sections: true
+number-depth: 3
+toc: true
+toc-depth: 3
+toc-title: "MỤC LỤC NỘI DUNG"
+lot: true
+lof: true
+
+# ==============================================================================
+# 3. QUY CHUẨN VỊ TRÍ TÊN BẢNG BIỂU & HÌNH ẢNH:
+# - Bảng biểu: Tên và số thứ tự đặt ngay PHÍA TRÊN (top)
+# - Hình ảnh: Tên và số thứ tự đặt ngay PHÍA DƯỚI (bottom)
+# ==============================================================================
+tbl-cap-location: top
+fig-cap-location: bottom
+
+crossref:
+  fig-title: "Hình"
+  tbl-title: "Bảng"
+  fig-prefix: "Hình"
+  tbl-prefix: "Bảng"
+  ref-hyperlink: true
+
+# ==============================================================================
+# 4. PHÔNG CHỮ & KHOẢNG CÁCH DÒNG / ĐOẠN:
+# - Phông chữ: Times New Roman
+# - Cỡ chữ nội dung: 13pt (thuộc chuẩn 12pt - 13pt)
+# - Khoảng cách dòng: 1.4 lines (thuộc chuẩn 1.3 - 1.5 lines)
+# ==============================================================================
+mainfont: "Times New Roman"
+fontsize: 13pt
+linestretch: 1.4
+
+# ==============================================================================
+# 5. KHỔ GIẤY & CANH LỀ TIÊU CHUẨN (A4 IN DỌC):
+# - Khổ giấy: A4 (210 mm x 297 mm), in dọc (portrait)
+# - Canh lề chuẩn: Trên 2.0 cm, Dưới 2.0 cm, Trái 3.0 cm (đóng gáy), Phải 2.0 cm
+# ==============================================================================
+format:
+  pdf:
+    pdf-engine: xelatex
+    papersize: a4
+    classoption: portrait
+    geometry:
+      - top=20mm
+      - bottom=20mm
+      - left=30mm
+      - right=20mm
+    include-in-header:
+      text: |
+        \usepackage{fontspec}
+        \setmainfont{Times New Roman}
+        \usepackage{setspace}
+        \setstretch{1.4}
+        \setlength{\parindent}{0.8cm}
+        \setlength{\parskip}{6pt}
+        \usepackage{caption}
+        \captionsetup[table]{position=top, skip=6pt, labelfont=bf}
+        \captionsetup[figure]{position=bottom, skip=6pt, labelfont=bf}
+        \usepackage{indentfirst}
+  docx:
+    toc: true
+    toc-depth: 3
+    toc-title: "MỤC LỤC NỘI DUNG"
+    number-sections: true
+    highlight-style: github
+  html:
+    theme: cosmo
+    toc: true
+    toc-depth: 3
+    toc-title: "MỤC LỤC NỘI DUNG"
+    number-sections: true
+    self-contained: true
+
+execute:
+  eval: false
+  echo: true
+  warning: false
+  message: false
+jupyter: python3
+---
+
+```{=html}
+<style>
+/* ==========================================================================
+   QUY CHUẨN ĐỊNH DẠNG TRANG IN & SOẠN THẢO (A4 PORTRAIT)
+   • Khổ giấy: A4 dọc (210 mm x 297 mm)
+   • Canh lề: Trên 2.0 cm, Dưới 2.0 cm, Trái 3.0 cm (đóng gáy), Phải 2.0 cm
+   • Phông chữ: Times New Roman, Cỡ chữ 13pt
+   • Khoảng cách dòng: 1.4 lines (Line spacing 1.3 - 1.5 lines)
+   • Khoảng cách đoạn: Before 0pt, After 6pt, Thụt đầu dòng 0.8 cm
+   ========================================================================== */
+@page {
+  size: A4 portrait;
+  margin-top: 2.0cm;
+  margin-bottom: 2.0cm;
+  margin-left: 3.0cm;
+  margin-right: 2.0cm;
+}
+
+body, p, li, td, th {
+  font-family: "Times New Roman", Times, "Liberation Serif", serif;
+  font-size: 13pt;
+  line-height: 1.4;
+  color: #111111;
+}
+
+p {
+  margin-top: 0pt;
+  margin-bottom: 6pt;
+  text-align: justify;
+  text-indent: 0.8cm;
+}
+
+h1, h2, h3, h4, .source-note, .figure-source-note, caption, figcaption, .cover-line {
+  text-indent: 0 !important;
+}
+
+/* Quy chuẩn Tên bảng đặt ở PHÍA TRÊN bảng */
+caption, .table caption {
+  caption-side: top !important;
+  font-family: "Times New Roman", Times, serif;
+  font-weight: bold;
+  font-size: 12pt;
+  margin-bottom: 6pt;
+  text-align: left;
+  color: #111111;
+}
+
+/* Quy chuẩn Tên hình đặt ở PHÍA DƯỚI hình */
+figure figcaption {
+  caption-side: bottom !important;
+  font-family: "Times New Roman", Times, serif;
+  font-weight: bold;
+  font-size: 12pt;
+  margin-top: 6pt;
+  text-align: center;
+  color: #111111;
+}
+
+/* Nguồn trích dẫn bên dưới Bảng */
+.source-note {
+  font-family: "Times New Roman", Times, serif;
+  font-size: 11pt;
+  font-style: italic;
+  margin-top: 4pt;
+  margin-bottom: 12pt;
+  text-align: left;
+}
+
+/* Nguồn trích dẫn bên dưới Hình */
+.figure-source-note {
+  font-family: "Times New Roman", Times, serif;
+  font-size: 11pt;
+  font-style: italic;
+  margin-top: 4pt;
+  margin-bottom: 16pt;
+  text-align: center;
+}
+
+/* Định dạng Trang bìa chuẩn A4 */
+.cover-page {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 760px;
+  min-height: 980px;
+  margin: 0 auto 30px auto;
+  padding: 40px 30px 30px 30px;
+  border: 4px double #111111;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  background-color: #ffffff;
+}
+
+.cover-section-top,
+.cover-section-mid,
+.cover-section-bottom {
+  width: 100%;
+  text-align: center;
+}
+
+.cover-line {
+  margin-top: 0 !important;
+  margin-bottom: 6pt !important;
+  text-align: center !important;
+  font-family: "Times New Roman", Times, serif;
+}
+
+.cover-school {
+  font-size: 15pt;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #111111;
+}
+
+.cover-faculty {
+  font-size: 13.5pt;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #111111;
+}
+
+.cover-logo-container {
+  margin: 14pt auto 12pt auto;
+  text-align: center;
+}
+
+.cover-logo {
+  width: 100px;
+  max-width: 110px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+.cover-divider {
+  width: 130px;
+  height: 1.5px;
+  background-color: #111111;
+  margin: 10pt auto 20pt auto;
+}
+
+.cover-type {
+  font-size: 20pt;
+  font-weight: bold;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #111111;
+  margin-bottom: 12pt !important;
+}
+
+.cover-subject {
+  font-size: 13pt;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #111111;
+  margin-bottom: 24pt !important;
+}
+
+.cover-topic-label {
+  font-size: 13.5pt;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #111111;
+  margin-bottom: 8pt !important;
+}
+
+.cover-topic-title {
+  font-size: 16pt;
+  font-weight: bold;
+  text-transform: uppercase;
+  line-height: 1.45;
+  color: #0b2545;
+  margin-bottom: 28pt !important;
+  padding: 0 10px;
+}
+
+.cover-instructor,
+.cover-class,
+.cover-group,
+.cover-student {
+  font-size: 13pt;
+  font-weight: bold;
+  color: #111111;
+  margin-bottom: 6pt !important;
+}
+
+.cover-location {
+  font-size: 12pt;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: #111111;
+  margin-top: 25pt !important;
+  margin-bottom: 0 !important;
+}
+
+/* Định dạng thụt lề dòng thứ 2 theo chuẩn APA 7th */
+.csl-entry {
+  margin-top: 0pt;
+  margin-bottom: 6pt;
+  padding-left: 1.27cm;
+  text-indent: -1.27cm;
+  text-align: justify;
+  line-height: 1.4;
+}
+</style>
+```
+
+<!-- ======================================================================= -->
+<!-- 1. TRANG BÌA CHÍNH (COVER PAGE)                                         -->
+<!-- ======================================================================= -->
+
+::: {.content-visible when-format="pdf"}
+```{=latex}
+\begin{titlepage}
+\thispagestyle{empty}
+\begin{center}
+\vspace*{0.3cm}
+{\fontsize{15pt}{18pt}\selectfont \textbf{TRƯỜNG ĐẠI HỌC TÀI CHÍNH - MARKETING}\par}
+\vspace{0.3cm}
+{\fontsize{13.5pt}{17pt}\selectfont \textbf{KHOA KHOA HỌC DỮ LIỆU}\par}
+\vspace{0.5cm}
+\includegraphics[width=3.2cm]{Ảnh1.png}\par
+\vspace{0.5cm}
+\rule{4cm}{1.2pt}\par
+\vspace{1.2cm}
+{\fontsize{20pt}{24pt}\selectfont \textbf{TIỂU LUẬN}\par}
+\vspace{0.6cm}
+{\fontsize{13pt}{17pt}\selectfont \textbf{HỌC PHẦN: LẬP TRÌNH PYTHON CHO KHOA HỌC DỮ LIỆU}\par}
+\vspace{1.4cm}
+{\fontsize{13.5pt}{17pt}\selectfont \textbf{ĐỀ TÀI}\par}
+\vspace{0.5cm}
+{\fontsize{16pt}{22pt}\selectfont \textbf{XÂY DỰNG MÔ HÌNH DỰ BÁO CHI PHÍ BỒI THƯỜNG BẢO HIỂM}\par}
+\vspace{1.6cm}
+{\fontsize{13pt}{17pt}\selectfont \textbf{Giảng viên hướng dẫn: ThS. Trần Mạnh Tường}\par}
+\vspace{0.3cm}
+{\fontsize{13pt}{17pt}\selectfont \textbf{Lớp học phần: 2631101190501}\par}
+\vspace{0.3cm}
+{\fontsize{13pt}{17pt}\selectfont \textbf{Nhóm thực hiện: Nhóm 6}\par}
+\vspace{0.3cm}
+{\fontsize{13pt}{17pt}\selectfont \textbf{Sinh viên thực hiện:}\par}
+\vspace{0.2cm}
+{\fontsize{12pt}{16pt}\selectfont 1. Phan Thị Quế Trân — MSSV: 2521001108\par}
+{\fontsize{12pt}{16pt}\selectfont 2. Nguyễn Ngọc Phương Thảo — MSSV: 2521001099\par}
+\vfill
+{\fontsize{12pt}{15pt}\selectfont \textbf{TP. HỒ CHÍ MINH, NĂM 2026}\par}
+\vspace*{0.3cm}
+\end{center}
+\end{titlepage}
+```
+:::
+
+::: {.content-visible unless-format="pdf"}
+::: {.cover-page}
+
+::: {.cover-section-top}
+<p class="cover-line cover-school">TRƯỜNG ĐẠI HỌC TÀI CHÍNH - MARKETING</p>
+<p class="cover-line cover-faculty">KHOA KHOA HỌC DỮ LIỆU</p>
+<div class="cover-logo-container">
+  <img src="Ảnh1.png" alt="Logo Trường Đại học Tài chính - Marketing" class="cover-logo">
+</div>
+<div class="cover-divider"></div>
+:::
+
+::: {.cover-section-mid}
+<p class="cover-line cover-type">TIỂU LUẬN</p>
+<p class="cover-line cover-subject">HỌC PHẦN: LẬP TRÌNH PYTHON CHO KHOA HỌC DỮ LIỆU</p>
+<p class="cover-line cover-topic-label">ĐỀ TÀI</p>
+<p class="cover-line cover-topic-title">XÂY DỰNG MÔ HÌNH DỰ BÁO CHI PHÍ BỒI THƯỜNG BẢO HIỂM</p>
+:::
+
+::: {.cover-section-bottom}
+<p class="cover-line cover-instructor">Giảng viên hướng dẫn: ThS. Trần Mạnh Tường</p>
+<p class="cover-line cover-class">Lớp học phần: 2631101190501</p>
+<p class="cover-line cover-group">Nhóm thực hiện: Nhóm 6</p>
+<p class="cover-line cover-student">Sinh viên thực hiện:</p>
+<p class="cover-line" style="font-size: 12.5pt; font-weight: bold; margin-bottom: 3pt !important;">1. Phan Thị Quế Trân &mdash; MSSV: 2521001108</p>
+<p class="cover-line" style="font-size: 12.5pt; font-weight: bold; margin-bottom: 16pt !important;">2. Nguyễn Ngọc Phương Thảo &mdash; MSSV: 2521001099</p>
+<p class="cover-line cover-location">TP. HỒ CHÍ MINH, NĂM 2026</p>
+:::
+
+:::
+:::
+
+{{< pagebreak >}}
+
+<!-- ======================================================================= -->
+<!-- 2. TRANG LỜI CAM ĐOAN & LỜI CẢM ƠN                                      -->
+<!-- ======================================================================= -->
+
+# LỜI CAM ĐOAN {.unnumbered}
+
+Nhóm sinh viên thực hiện xin cam đoan rằng công trình nghiên cứu với đề tài **“Xây dựng mô hình dự báo chi phí bồi thường bảo hiểm”** là kết quả làm việc nghiêm túc, độc lập và trung thực của nhóm tác giả dưới sự định hướng học thuật của giảng viên hướng dẫn là ThS. Trần Mạnh Tường.
+
+Chúng em xin cam kết các nội dung sau:
+
+1. Toàn bộ số liệu thực nghiệm được khai thác, phân tích và kiểm toán hoàn toàn khách quan, có nguồn gốc minh bạch từ bộ dữ liệu PRJ04 do giảng viên phụ trách học phần cung cấp, được mô phỏng dựa trên cấu trúc hồ sơ yêu cầu bồi thường bảo hiểm y tế Medicare giai đoạn 2008–2009 của Trung tâm Dịch vụ Medicare & Medicaid Hoa Kỳ (CMS).
+2. Các mã nguồn lập trình phân tích dữ liệu, bảng số liệu thống kê, biểu đồ trực quan hóa và kết quả mô hình dự báo đều do chính nhóm tác giả trực tiếp thực hiện trên môi trường Python, không sao chép trái phép bất kỳ sản phẩm học thuật của cá nhân hay tổ chức nào khác.
+3. Mọi tài liệu tham khảo, bài báo khoa học và công trình nghiên cứu được trích dẫn trong tiểu luận đều được ghi rõ nguồn gốc theo đúng định dạng chuẩn trích dẫn APA 7th Edition.
+
+Nhóm tác giả xin chịu hoàn toàn trách nhiệm trước Nhà trường, Khoa Khoa học Dữ liệu và giảng viên hướng dẫn về tính trung thực của toàn bộ nội dung trong báo cáo này.
+
+::: {style="text-align: right; margin-top: 24pt;"}
+*TP. Hồ Chí Minh, năm 2026*  
+**Đại diện nhóm tác giả**  
+*(Ký và ghi rõ họ tên)*  
+
+<br><br><br>
+
+**Phan Thị Quế Trân** *(MSSV: 2521001108)*  
+**Nguyễn Ngọc Phương Thảo** *(MSSV: 2521001099)*
+:::
+
+{{< pagebreak >}}
+
+# LỜI CẢM ƠN {.unnumbered}
+
+Lời đầu tiên, nhóm tác giả xin gửi lời cảm ơn chân thành và sâu sắc nhất đến Ban Giám hiệu Trường Đại học Tài chính - Marketing (UFM) cùng toàn thể quý Thầy Cô Khoa Khoa học Dữ liệu. Quý Thầy Cô đã luôn tận tâm giảng dạy, truyền đạt những kiến thức chuyên môn vững chắc và tạo điều kiện học tập thuận lợi để chúng em có cơ hội nghiên cứu, rèn luyện kỹ năng giải quyết bài toán thực tế trong lĩnh vực phân tích dữ liệu.
+
+Đặc biệt, nhóm chúng em xin bày tỏ lòng biết ơn sâu sắc đến Thầy **ThS. Trần Mạnh Tường**, giảng viên phụ trách học phần. Thầy đã dành nhiều thời gian tận tình định hướng phương pháp luận khoa học, kiên nhẫn hướng dẫn kỹ thuật và đưa ra những nhận xét, đóng góp vô cùng xác đáng từ khâu kiểm toán dữ liệu cho đến định hình các mục tiêu nghiên cứu và mô hình hóa dự báo. Những chia sẻ thực tiễn và sự chỉ dẫn quý giá của Thầy chính là động lực to lớn giúp nhóm hoàn thành đề tài này.
+
+Mặc dù nhóm đã nỗ lực hết sức để thực hiện bài nghiên cứu một cách chỉn chu nhất, song do giới hạn về mặt thời gian và kinh nghiệm, báo cáo khó tránh khỏi những thiếu sót nhất định. Nhóm chúng em rất mong nhận được những lời nhận xét, góp ý quý báu từ Thầy để công trình nghiên cứu được hoàn thiện hơn.
+
+Kính chúc Thầy ThS. Trần Mạnh Tường cùng toàn thể quý Thầy Cô luôn dồi dào sức khỏe, niềm vui và đạt nhiều thành tựu rực rỡ trong sự nghiệp giáo dục cao quý!
+
+::: {style="text-align: right; margin-top: 24pt;"}
+*TP. Hồ Chí Minh, năm 2026*  
+**Nhóm sinh viên thực hiện**  
+*(Ký và ghi rõ họ tên)*  
+
+<br><br><br>
+
+**Nhóm 6**  
+*(Phan Thị Quế Trân & Nguyễn Ngọc Phương Thảo)*
+:::
+
+{{< pagebreak >}}
+
+<!-- ======================================================================= -->
+<!-- 3. MỤC LỤC TỰ ĐỘNG                                                      -->
+<!-- ======================================================================= -->
+
+<!-- ======================================================================= -->
+<!-- 4. DANH MỤC CHỮ VIẾT TẮT                                                -->
+<!-- ======================================================================= -->
+
+# DANH MỤC CHỮ VIẾT TẮT {.unnumbered}
+
+::: {#tbl-danh-muc-viet-tat}
+| Từ Viết Tắt | Thuật Ngữ Tiếng Anh Đầy Đủ | Thuật Ngữ Tiếng Việt / Giải Thích |
+| :--- | :--- | :--- |
+| **BHYT** | Health Insurance | Bảo hiểm y tế |
+| **CMS** | Centers for Medicare & Medicaid Services | Trung tâm Dịch vụ Medicare & Medicaid Hoa Kỳ |
+| **DE-SynPUF** | Data Entrepreneurs’ Synthetic Public Use File | Bộ dữ liệu giả lập công khai của CMS phục vụ nghiên cứu |
+| **DRG** | Diagnosis-Related Group | Nhóm chẩn đoán liên quan (xác định mức chi trả trọn gói) |
+| **FK** | Foreign Key | Khóa ngoại trong cơ sở dữ liệu quan hệ |
+| **GLM** | Generalized Linear Model | Mô hình tuyến tính tổng quát |
+| **HHS** | U.S. Department of Health and Human Services | Bộ Y tế và Dịch vụ Nhân sinh Hoa Kỳ |
+| **IBNR** | Incurred But Not Reported | Tổn thất đã phát sinh nhưng chưa khai báo lên hệ thống |
+| **ICD** | International Classification of Diseases | Phân loại quốc tế về bệnh tật (chuẩn ICD-9) |
+| **ICD-9-CM** | International Classification of Diseases, 9th Revision, Clinical Modification | Hệ thống phân loại quốc tế về bệnh tật và thủ thuật lâm sàng phiên bản 9 |
+| **IQR** | Interquartile Range | Khoảng tứ phân vị (IQR = Q₃ - Q₁) |
+| **LOS** | Length of Stay | Thời gian lưu trú giường bệnh (Số ngày nằm viện) |
+| **MAE** | Mean Absolute Error | Sai số tuyệt đối trung bình |
+| **MAPE** | Mean Absolute Percentage Error | Sai số phần trăm tuyệt đối trung bình |
+| **OLS** | Ordinary Least Squares | Phương pháp hồi quy bình phương bé nhất |
+| **PK** | Primary Key | Khóa chính duy nhất của bảng dữ liệu |
+| **R²** | R-squared (Coefficient of Determination) | Hệ số xác định của mô hình hồi quy |
+| **RBNS** | Reported But Not Settled | Tổn thất đã phát sinh và đã báo cáo nhưng chưa giải quyết |
+| **RMSE** | Root Mean Squared Error | Căn bậc hai sai số toàn phương trung bình |
+| **RQ** | Research Question | Câu hỏi nghiên cứu |
+| **USD** | United States Dollar | Đô la Mỹ |
+
+Bảng: Danh mục các thuật ngữ và chữ viết tắt trong đề tài
+:::
+
+{{< pagebreak >}}
+
+<!-- ======================================================================= -->
+<!-- 5. DANH MỤC BẢNG BIỂU                                                   -->
+<!-- ======================================================================= -->
+
+# DANH MỤC BẢNG BIỂU {.unnumbered}
+
+::: {#tbl-danh-sach-bang}
+| Ký Hiệu Bảng | Tên Bảng Biểu | Trang |
+| :--- | :--- | :---: |
+| **Bảng 1.1** | So sánh đặc trưng và cơ cấu chi phí giữa hai tập dữ liệu khám chữa bệnh Ngoại trú và Nội trú | *Tự động cập nhật* |
+| **Bảng 1.2** | Ma trận liên kết Mục tiêu nghiên cứu, Câu hỏi nghiên cứu và Phương pháp thực hiện | *Tự động cập nhật* |
+| **Bảng 2.1** | Từ điển dữ liệu chuẩn hóa 30 thuộc tính trong hồ sơ bồi thường Medicare | *Tự động cập nhật* |
+| **Bảng 3.1** | Thống kê tổng quan cỡ mẫu và số lượng thực thể duy nhất giữa hai tập dữ liệu | *Tự động cập nhật* |
+| **Bảng 4.1** | Bảng kiểm toán chất lượng dữ liệu chi tiết - Hồ sơ Ngoại trú (517.737 dòng) | *Tự động cập nhật* |
+| **Bảng 4.2** | Bảng kiểm toán chất lượng dữ liệu chi tiết - Hồ sơ Nội trú (9.551 dòng) | *Tự động cập nhật* |
+| **Bảng 4.3** | Thống kê mô tả tài chính và phân tích ngưỡng ngoại lai (Outliers) | *Tự động cập nhật* |
+| **Bảng 5.1** | Tổng hợp mục tiêu phân tích, phương pháp tiếp cận Python và giá trị nghiệp vụ | *Tự động cập nhật* |
+
+Bảng: Khung danh mục bảng biểu dự kiến trong đề tài
+:::
+
+{{< pagebreak >}}
+
+<!-- ======================================================================= -->
+<!-- 6. DANH MỤC HÌNH VẼ / BIỂU ĐỒ                                           -->
+<!-- ======================================================================= -->
+
+# DANH MỤC HÌNH VẼ / BIỂU ĐỒ {.unnumbered}
+
+::: {#tbl-danh-sach-hinh}
+| Ký Hiệu Hình | Tên Hình Vẽ / Biểu Đồ | Trang |
+| :--- | :--- | :---: |
+| **Hình 2.1** | Sơ đồ kiến trúc quan hệ thực thể trong hệ thống giám định chi trả bảo hiểm Medicare | *Tự động cập nhật* |
+| **Hình 4.1** | Biểu đồ so sánh tỷ lệ thiếu dữ liệu của Top 15 cột giữa Ngoại trú và Nội trú | *Tự động cập nhật* |
+| **Hình 4.2** | Phân phối chi trả tiền bồi thường và biểu đồ hộp phát hiện các giá trị ngoại lai (Outliers) | *Tự động cập nhật* |
+
+Bảng: Khung danh mục hình vẽ và biểu đồ dự kiến trong đề tài
+:::
+
+{{< pagebreak >}}
+
+<!-- ======================================================================= -->
+<!-- 7. TÓM TẮT ĐỒ ÁN (EXECUTIVE SUMMARY - 300 TỪ)                            -->
+<!-- ======================================================================= -->
+
+# TÓM TẮT ĐỒ ÁN (EXECUTIVE SUMMARY) {.unnumbered}
+
+Trong lĩnh vực bảo hiểm y tế, việc kiểm soát chi phí bồi thường và nhận diện các khiếu nại viện phí bất thường đóng vai trò then chốt đối với sự bền vững của quỹ an sinh xã hội. Đề tài **“Xây dựng mô hình dự báo chi phí bồi thường bảo hiểm”** tập trung khai phá bộ dữ liệu PRJ04 do giảng viên cung cấp, được mô phỏng theo cấu trúc hồ sơ Medicare DE-SynPUF giai đoạn 2008–2009 của CMS, gồm 517.737 hồ sơ ngoại trú và 9.551 hồ sơ nội trú.
+
+Ở giai đoạn kiểm toán chất lượng, nghiên cứu phát hiện các rủi ro dữ liệu trọng yếu: nhiều biến thể dữ liệu thiếu (`'None'`, `'N/A'`, `'?'`, `'-'`, `'null'`, `'unknown'`, ô trống), số tiền dính đơn vị đo lường, ngày bị cắt cụt, tỷ lệ khuyết thiếu khoảng 26% đến 30% ở các cột khóa ngoại trú và 11% đến 21% ở các cột khóa nội trú, cùng 7.690 giá trị âm ở biến mục tiêu. Đặc biệt, chi phí bồi hoàn (`InscClaimAmtReimbursed`) có phân phối lệch phải cực đoan với nhiều điểm ngoại lai tài chính lớn, tiềm ẩn nguy cơ phát sinh chi phí bất thường.
+
+Sau khi làm sạch, đề tài thực hiện kỹ nghệ đặc trưng y tế: tính số ngày nằm viện (`Length of Stay`), thời gian đợt yêu cầu bồi thường (`ClaimDuration`), cờ bác sĩ phẫu thuật/hỗ trợ, tháng phát sinh hồ sơ, tổng hợp số lượng mã bệnh lý và mã thủ thuật can thiệp ICD-9-CM. Nghiên cứu triển khai thử nghiệm 4 mô hình: Hồi quy OLS trên biến đổi logarit, GLM Tweedie/Gamma, Rừng ngẫu nhiên (Random Forest) và XGBoost nhằm tìm kiếm mô hình đạt độ chính xác dự báo tối ưu, đồng thời sử dụng phần dư dự báo để nhận diện các cơ sở y tế có chi phí lệch bất thường. Kết quả thực nghiệm chi tiết sẽ được công bố và đánh giá tại Chương 4, cung cấp cơ sở khoa học hỗ trợ định phí, tối ưu hóa quỹ dự phòng và hỗ trợ giám định bảo hiểm.
+
+* **Từ khóa:** Chi phí bồi thường bảo hiểm, Medicare CMS, Kiểm toán dữ liệu, Dự báo chi phí y tế, Nhận diện bất thường, Machine Learning.
+
+---
+
+{{< pagebreak >}}
+
+<!-- ======================================================================= -->
+<!-- CHƯƠNG 1: TỔNG QUAN ĐỀ TÀI VÀ MỤC TIÊU NGHIÊN CỨU                       -->
+<!-- ======================================================================= -->
+
+# CHƯƠNG 1: TỔNG QUAN ĐỀ TÀI VÀ MỤC TIÊU NGHIÊN CỨU
+
+## 1.1. Bối cảnh nghiên cứu và lý do chọn đề tài
+
+### 1.1.1. Bối cảnh nghiên cứu
+
+Trong cấu trúc an sinh xã hội hiện đại, bảo hiểm y tế (BHYT) đóng vai trò là một trong những cơ chế tài chính phòng vệ trọng yếu, giúp phân tán rủi ro bất ngờ về chi phí khám chữa bệnh và bảo vệ sức khỏe cộng đồng [@frees2014]. Tại Hoa Kỳ, chương trình bảo hiểm y tế công Medicare do Trung tâm Dịch vụ Medicare & Medicaid (CMS) quản lý là một trong những hệ thống bảo hiểm y tế quy mô lớn nhất thế giới, chịu trách nhiệm bảo đảm quyền lợi y tế cho hơn 65 triệu người thụ hưởng, bao gồm người cao tuổi từ 65 tuổi trở lên và người khuyết tật có hoàn cảnh đặc biệt. Với tổng ngân sách chi trả hàng năm ở mức xấp xỉ 1.000 tỷ USD [@cms2023nhe], sự ổn định tài chính và an toàn thanh khoản của quỹ Medicare có tác động trực tiếp và sâu sắc đến toàn bộ nền kinh tế quốc gia.
+
+Đặc thù của danh mục chi phí y tế trong hệ thống Medicare là sự kết hợp phức tạp giữa hai nhóm nghiệp vụ khám chữa bệnh hoàn toàn khác biệt:
+
+1. **Khám chữa bệnh Ngoại trú (Outpatient Care):** Đại diện cho các đợt khám lâm sàng định kỳ, xét nghiệm máu, chẩn đoán hình ảnh và cấp phát thuốc trong ngày. Nhóm này có **tần suất phát sinh rất cao** (trong tập dữ liệu nghiên cứu có tới 517.737 lượt yêu cầu bồi hoàn) nhưng **quy mô chi phí trên mỗi hồ sơ ở mức trung bình thấp** (trung vị chi trả chỉ 80,00 USD trên các bản ghi hợp lệ ban đầu).
+2. **Điều trị Nội trú (Inpatient Care):** Áp dụng cho các trường hợp bệnh nhân có y lệnh nhập viện, lưu trú qua đêm tại giường bệnh để thực hiện đại phẫu thuật hoặc điều trị các bệnh lý mãn tính, cấp tính nghiêm trọng. Nhóm này có **tần suất phát sinh thấp hơn nhiều** (chỉ có 9.551 hồ sơ, tương đương 1,81% tổng lượt giao dịch) nhưng lại sở hữu **mức độ nghiêm trọng về tài chính cực kỳ lớn** (mức chi trả trung bình lên tới 93.128,71 USD, trung vị 8.000,00 USD và trường hợp lớn nhất lên tới 47.000.000,00 USD, được tính toán trên các bản ghi hợp lệ ban đầu).
+
+Chính sự biến động khôn lường và phân phối chi phí có độ lệch rất lớn khiến cho công tác quản trị quỹ bảo hiểm y tế luôn là một thách thức định lượng phức tạp đối với các chuyên viên định toán và phân tích dữ liệu. Việc ứng dụng các kỹ thuật phân tích dữ liệu và học máy hiện đại nhằm **hỗ trợ dự báo chi phí bồi thường bảo hiểm (`InscClaimAmtReimbursed`)** giữ vai trò trọng yếu thông qua 3 trụ cột nghiệp vụ cốt lõi sau:
+
+* **Định phí bảo hiểm công bằng và bền vững (Ratemaking & Pricing):** Theo nguyên lý định phí bảo hiểm hiện đại [@goldburd2016], mức phí thu vào từ người tham gia phải đủ bù đắp chi phí bồi thường kỳ vọng cộng với chi phí quản lý vận hành. Nếu dự báo chi phí thấp hơn thực tế (*Underpricing*), quỹ bảo hiểm sẽ nhanh chóng đối mặt với nguy cơ thâm hụt và mất khả năng thanh toán. Ngược lại, nếu dự báo chi phí quá cao (*Overpricing*), mức phí đóng sẽ trở thành gánh nặng kinh tế quá tải, làm suy giảm tỷ lệ bao phủ của bảo hiểm y tế toàn dân.
+* **Trích lập quỹ dự phòng bồi thường bảo hiểm (Loss Reserving):** Để đảm bảo an toàn vốn và khả năng thanh toán theo quy chuẩn quốc tế [@kaas2008], tổ chức bảo hiểm bắt buộc phải trích lập các khoản dự phòng chi trả cho những tổn thất đã xảy ra nhưng chưa thanh toán dứt điểm (RBNS - *Reported But Not Settled*) cũng như tổn thất đã phát sinh nhưng chưa kịp khai báo lên hệ thống (IBNR - *Incurred But Not Reported*). Một mô hình dự báo chi phí đạt độ chính xác cao giúp các chuyên viên định toán (Actuaries) ước lượng sát nghĩa vụ tài chính trong tương lai, hạn chế nguy cơ mất thanh khoản đột ngột.
+* **Kiểm soát rủi ro và nhận diện hồ sơ bất thường cần rà soát (Risk Management & Anomaly Screening):** Theo các báo cáo giám sát tài chính của CMS và Văn phòng Tổng thanh tra Bộ Y tế và Dịch vụ Nhân sinh Hoa Kỳ [@cms2023nhe; @hhsoig2023], các khoản thanh toán sai lệch (improper payments) gây thất thoát hàng chục tỷ USD mỗi năm trong ngân sách Medicare. Cần lưu ý rằng khái niệm thanh toán sai theo định nghĩa của CMS không đồng nghĩa với gian lận (fraud); phần lớn thanh toán sai trên thực tế xuất phát từ tình trạng thiếu chứng từ y tế hợp lệ (insufficient documentation) hoặc sai sót mã hóa hành chính (coding errors). Dẫu vậy, hệ thống bảo hiểm y tế đồng thời vẫn phải đối mặt với các nguy cơ gian lận và lạm dụng chi phí có chủ đích thông qua kê khống viện phí, chỉ định dịch vụ quá mức hoặc cố tình áp sai mã bệnh nặng hơn để tăng tiền bồi hoàn (Upcoding). Mô hình dự báo chi phí đóng vai trò như một **hệ thống tham chiếu kỳ vọng (Expected Benchmark)**: mọi hồ sơ yêu cầu bồi hoàn có số tiền cao vượt trội bất thường so với mức dự báo của mô hình (dựa trên các thông số chẩn đoán bệnh lý, danh mục mã thủ thuật can thiệp và đặc điểm điều trị tương đương) sẽ được hệ thống gắn cờ cảnh báo để cơ quan giám định ưu tiên đưa vào danh sách rà soát kiểm tra chuyên sâu.
+
+### 1.1.2. Lý do chọn đề tài
+
+Xuất phát từ bối cảnh lý luận và thực tiễn nêu trên, nhóm tác giả quyết định lựa chọn đề tài **“Xây dựng mô hình dự báo chi phí bồi thường bảo hiểm”** vì ba lý do cốt lõi sau:
+
+1. **Tính cấp thiết và giá trị thực tiễn cao của bài toán:** Chi phí y tế không ngừng leo thang cùng áp lực già hóa dân số đang tạo nên gánh nặng tài chính khổng lồ lên hệ thống an sinh xã hội toàn cầu. Việc nghiên cứu xây dựng mô hình dự báo chi phí bồi thường có ý nghĩa thiết thực trong việc hỗ trợ các nhà quản lý quỹ bảo hiểm tối ưu hóa dòng tiền, chủ động dự phóng nghĩa vụ chi trả và nâng cao hiệu quả thanh tra, giám định.
+2. **Sự chuyển dịch phương pháp luận từ truyền thống sang Khoa học Dữ liệu và Học máy:** Các mô hình thống kê cổ điển trước đây thường bộc lộ nhiều hạn chế khi đối mặt với dữ liệu bồi thường có phân phối lệch phải cực đoan và nhiều tương tác phi tuyến phức tạp. Việc ứng dụng kết hợp giữa lý thuyết mô hình định phí chuyên ngành (GLM phân phối Tweedie/Gamma) và các thuật toán học máy tiên tiến (Random Forest, XGBoost) được kỳ vọng giúp nâng cao độ chính xác dự báo và hỗ trợ tự động hóa phát hiện rủi ro bất thường.
+3. **Mục tiêu thực hành và làm chủ kỹ năng trong học phần:** Thông qua học phần *Lập trình Python cho Khoa học Dữ liệu*, nhóm mong muốn trực tiếp thực hành và làm chủ quy trình giải quyết một bài toán phân tích dữ liệu quy mô lớn (với hơn 520.000 dòng dữ liệu). Đề tài tạo cơ hội để nhóm rèn luyện toàn diện quy trình phân tích từ khâu kiểm toán chất lượng dữ liệu bẩn, xử lý các biến thể dữ liệu khuyết thiếu phức tạp, cô lập dị thường số học, đến kỹ nghệ đặc trưng y tế chuyên sâu và triển khai đánh giá đa mô hình trên hệ sinh thái Python (`pandas`, `numpy`, `scikit-learn`, `xgboost`, `statsmodels`).
+
+---
+
+## 1.2. Vấn đề nghiên cứu cần giải quyết và các câu hỏi nghiên cứu
+
+### 1.2.1. Thách thức kỹ thuật đặt ra trong thực tế
+
+Mặc dù vai trò của việc dự báo chi phí bồi thường là cực kỳ cấp thiết, song các chuyên viên phân tích dữ liệu và định toán bảo hiểm thường xuyên đối mặt với **3 thách thức kỹ thuật lớn** khi làm việc với hồ sơ thực tế:
+
+1. **Sự bất đối xứng và phân phối lệch phải cực đoan (Heavy-Tailed Skewness):** Dữ liệu chi phí bồi thường không tuân theo phân phối chuẩn Gauss mà bị lệch phải rất mạnh, đi kèm một lượng lớn các hồ sơ có chi phí nhỏ hoặc bằng 0 và một số ít hồ sơ có chi phí khổng lồ hàng triệu USD. Các mô hình hồi quy tuyến tính cổ điển (OLS) thường **kém phù hợp** vì các giả định về phương sai sai số đồng nhất (Homoscedasticity) và tính chuẩn của phần dư bị vi phạm nghiêm trọng [@frees2014; @hastie2009].
+2. **Nhiễm bẩn và khuyết thiếu dữ liệu phức tạp trong thực nghiệm:** Trong bộ dữ liệu bồi thường được mô phỏng phục vụ nghiên cứu, quá trình trích xuất và giả lập hồ sơ làm phát sinh hàng loạt dạng lỗi dữ liệu:
+   * *Ký tự giả lập dữ liệu thiếu:* Sự xuất hiện phân tán của các chuỗi văn bản như `'None'`, `'N/A'`, `'?'`, `'-'`, `'null'`, `'NULL'`, `'nan'`, `'NAN'`, `'unknown'`, `'chưa rõ'`, cùng các ô trống hoàn toàn (`''`).
+   * *Số tiền bị dính đơn vị đo lường hoặc tiền tệ:* Các trường tài chính bị lẫn ký tự như `'USD'`, `'VND'`, `'đ'`, `'kg'`, `'%'`, khiến dữ liệu số bị hiểu nhầm thành chuỗi văn bản.
+   * *Khoảng trắng thừa và định dạng không đồng nhất:* Chuỗi ký tự bị dính khoảng trắng ở đầu hoặc cuối (leading/trailing whitespace), chữ hoa và chữ thường lẫn lộn.
+   * *Định dạng ngày tháng bị cắt cụt (truncated date strings):* Chuỗi ngày bị mất ngày hoặc sai cấu trúc (ví dụ: `2008-12-`).
+   * *Dị thường số học ở biến mục tiêu:* Xuất hiện 7.690 bản ghi có tiền bồi hoàn mang dấu âm phi lý (gồm 7.344 bản ghi ở tệp Ngoại trú và 346 bản ghi ở tệp Nội trú).
+3. **Mối quan hệ phi tuyến và tương tác đa tầng giữa các đặc trưng y tế:** Chi phí bồi hoàn không chỉ phụ thuộc tuyến tính vào thời gian nằm viện mà còn bị chi phối mạnh mẽ bởi mức độ phức tạp của các mã chẩn đoán bệnh tật ICD-9, danh mục mã thủ thuật can thiệp ICD-9-CM, cùng đặc điểm vận hành của từng cơ sở y tế (`Provider`) và đội ngũ bác sĩ điều trị/phẫu thuật.
+
+### 1.2.2. Các câu hỏi nghiên cứu (Research Questions)
+
+Để giải quyết căn cơ các khó khăn nêu trên, đề tài tập trung trả lời **4 câu hỏi nghiên cứu trung tâm**:
+
+* **Câu hỏi nghiên cứu 1 (RQ1 - Feature Drivers):** Những nhóm đặc trưng nào (thời gian lưu trú giường bệnh `Length of Stay`, thời gian đợt yêu cầu bồi thường `ClaimDuration`, số lượng mã chẩn đoán ICD-9, số lượng mã thủ thuật can thiệp ICD-9-CM, thông tin cơ sở khám chữa bệnh `Provider`, hay bác sĩ phụ trách) có mức độ ảnh hưởng và đóng góp quan trọng nhất đến quy mô chi phí bồi hoàn bảo hiểm y tế?
+* **Câu hỏi nghiên cứu 2 (RQ2 - Inpatient vs Outpatient Differences):** Cơ cấu chi phí và phân phối rủi ro bồi thường giữa hai nghiệp vụ khám chữa bệnh Nội trú và Ngoại trú có sự khác biệt căn bản như thế nào? Sự khác biệt này đòi hỏi chiến lược xử lý dữ liệu và thiết lập tham số mô hình riêng biệt ra sao?
+* **Câu hỏi nghiên cứu 3 (RQ3 - Model Benchmarking):** Trong số các lớp mô hình thử nghiệm (Hồi quy tuyến tính cổ điển OLS trên biến đổi logarit, Mô hình tuyến tính tổng quát GLM phân phối Tweedie/Gamma, Rừng ngẫu nhiên Random Forest, và Thuật toán tăng cường độ dốc XGBoost), mô hình nào đạt độ chính xác dự báo cao nhất trên tập dữ liệu kiểm tra?
+* **Câu hỏi nghiên cứu 4 (RQ4 - Anomaly Detection & Screening):** Làm thế nào để sử dụng mức chênh lệch giữa chi phí thực tế và chi phí dự báo từ mô hình nhằm nhận diện, khoanh vùng các cơ sở y tế (`Provider`) có chi phí phát sinh lệch bất thường cần ưu tiên đưa vào danh sách rà soát kiểm toán?
+
+Nhằm dẫn dắt vấn đề và minh họa cụ thể cho sự phân hóa sâu sắc giữa hai hình thức khám chữa bệnh, các thông số thống kê tổng hợp ban đầu được trình bày tại @tbl-so-sanh-chi-phi (các phân tích phân phối chi tiết và kiểm toán toàn diện sẽ được mở rộng ở Chương 3):
+
+::: {#tbl-so-sanh-chi-phi}
+| Tiêu chí So sánh | Hồ sơ Khám Ngoại trú (Outpatient Claims) | Hồ sơ Điều trị Nội trú (Inpatient Claims) | Ý Nghĩa Thực Tiễn Đối Với Mô Hình Hóa |
+| :--- | :---: | :---: | :--- |
+| **Tên tệp dữ liệu** | `...PRJ04_Phan Thị Quế Trân (1).csv` | `...PRJ04_Phan Thị Quế Trân.csv (1).csv` | Tệp Nội trú nhận diện bằng 3 cột đặc thù: `AdmissionDt`, `DischargeDt`, `DiagnosisGroupCode` |
+| **Tổng số bản ghi (Rows)** | **517.737** lượt hồ sơ | **9.551** lượt hồ sơ | Ngoại trú chiếm 98,19% tổng lượt giao dịch |
+| **Số biến thuộc tính** | **27** biến (tập con của 30 biến) | **30** biến (chứa đầy đủ 27 biến ngoại trú + 3 biến nội trú) | 27 cột ngoại trú là tập con của 30 cột nội trú; tổng cộng có 30 biến khác nhau |
+| **Số bản ghi hợp lệ ban đầu (thuần số ≥ 0, trước xử lý đơn vị)** | 452.487 bản ghi (87,40%) | 6.982 bản ghi (73,10%) | Sàng lọc sơ bộ dòng thuần số; các dòng dính đơn vị (33.289 ngoại trú, 453 nội trú) sẽ được xử lý bằng Regex và tính lại ở Chương 3 |
+| **Tổng chi trả bồi thường** | **1.157.614.040 USD** | **650.224.658 USD** | Dòng tiền chi trả nội trú bình quân trên mỗi ca cực lớn |
+| **Chi phí trung bình (Mean)** | **2.558,34 USD** | **93.128,71 USD** | Chi phí trung bình nội trú gấp hơn 36 lần ngoại trú |
+| **Trung vị chi trả (Median)** | **80,00 USD** | **8.000,00 USD** | Trung vị nội trú gấp đúng 100 lần trung vị ngoại trú |
+| **Ngưỡng ngoại lai (Q₃ + 1,5×IQR)** | **690,00 USD** | **24.000,00 USD** | Phân vị tài chính phân hóa cực đoan giữa 2 phân khúc |
+| **Số lượng Outliers vượt ngưỡng** | 58.930 hồ sơ (13,02%) | 600 hồ sơ (8,59%) | Nhóm đối tượng rủi ro cao cần được mô hình nhận diện |
+| **Chi trả lớn nhất (Max)** | 10.300.000,00 USD | 47.000.000,00 USD | Bằng chứng rõ rệt về phân phối đuôi béo (Fat-tailed) |
+
+Bảng 1.1: So sánh đặc trưng và cơ cấu chi phí giữa hai tập dữ liệu khám chữa bệnh Ngoại trú và Nội trú
+:::
+::: {.source-note}
+*Nguồn: Nhóm tác giả tính toán thực nghiệm trên các bản ghi hợp lệ từ bộ dữ liệu PRJ04 (2026)*
+:::
+
+---
+
+## 1.3. Mục tiêu nghiên cứu
+
+### 1.3.1. Mục tiêu tổng quát
+
+Mục tiêu xuyên suốt của đề tài là: **Xây dựng hệ thống mô hình học máy (Machine Learning) đạt độ chính xác cao nhất trong các mô hình thử nghiệm nhằm dự báo quy mô chi phí bồi thường bảo hiểm y tế (`InscClaimAmtReimbursed`) dựa trên bộ dữ liệu PRJ04 do giảng viên cung cấp**, qua đó cung cấp cơ sở khoa học định lượng hỗ trợ các cơ quan quản lý và doanh nghiệp bảo hiểm trong công tác định phí, tối ưu hóa trích lập quỹ dự phòng và hỗ trợ giám định ngăn ngừa tổn thất tài chính.
+
+### 1.3.2. Mục tiêu cụ thể
+
+Để hoàn thành mục tiêu tổng quát trên, đề tài phân rã thành **4 mục tiêu chuyên môn cụ thể** theo chu trình phân tích khoa học dữ liệu:
+
+1. **Kiểm toán chất lượng và làm sạch dữ liệu (Data Quality Audit & Cleaning):**
+   * Xây dựng quy trình tự động rà soát, đo lường tỷ lệ mất mát thông tin trên toàn bộ 30 biến thuộc tính khác nhau của 2 tệp dữ liệu (trong đó 27 cột thuộc tính của tệp Ngoại trú là tập con của 30 cột thuộc tính ở tệp Nội trú).
+   * Xử lý dứt điểm các biến thể dữ liệu thiếu giả mạo (`'None'`, `'N/A'`, `'?'`, `'-'`, `'null'`, `'NULL'`, `'nan'`, `'NAN'`, `'unknown'`, `'chưa rõ'`, cùng các ô trống) về chuẩn giá trị rỗng `np.nan`.
+   * Loại bỏ đơn vị đo lường và tiền tệ dính kèm (`'USD'`, `'VND'`, `'đ'`, `'kg'`, `'%'`), cắt tỉa khoảng trắng thừa, đồng nhất kiểu chữ và chuẩn hóa định dạng ngày bị cắt cụt.
+   * Phát hiện, cô lập và phân loại 7.690 giá trị âm ở biến mục tiêu (gồm 7.344 bản ghi ở tệp Ngoại trú và 346 bản ghi ở tệp Nội trú) nhằm bảo đảm tính toàn vẹn của dữ liệu đầu vào.
+2. **Khám phá dữ liệu và kỹ nghệ đặc trưng y tế (Exploratory Data Analysis & Feature Engineering):**
+   * Phân tích phân phối, tương quan giữa các biến lâm sàng, hành chính và tài chính.
+   * Sáng tạo các đặc trưng phái sinh có ý nghĩa nghiệp vụ cao: tính số ngày nằm viện nội trú `LengthOfStay` (LOS), thời gian đợt yêu cầu bồi thường `ClaimDuration`, tổng hợp số lượng mã chẩn đoán bệnh lý `Diagnosis_Count`, số lượng mã thủ thuật can thiệp `Procedure_Count`, các biến cờ (flags) ghi nhận sự hiện diện của bác sĩ phẫu thuật/bác sĩ hỗ trợ, và tháng phát sinh hồ sơ nhằm nắm bắt yếu tố mùa vụ.
+3. **Huấn luyện, tinh chỉnh và đánh giá so sánh đa mô hình (Model Benchmarking):**
+   * Huấn luyện mô hình cơ sở: Hồi quy tuyến tính cổ điển OLS (Ordinary Least Squares) trên thang biến đổi logarit tự nhiên kết hợp hệ số hiệu chỉnh sai lệch Smearing.
+   * Triển khai mô hình định phí bảo hiểm chuyên ngành: Mô hình tuyến tính tổng quát (GLM) với phân phối Gamma và Tweedie kết hợp hàm liên kết Log [@goldburd2016].
+   * Triển khai các thuật toán học máy tiên tiến có khả năng học phi tuyến: Rừng ngẫu nhiên (Random Forest) [@breiman2001] và Tăng cường độ dốc cực đại (XGBoost) [@chen2016].
+   * Đánh giá và so sánh định lượng độ chính xác thông qua hệ thống 4 chỉ số: Căn bậc hai sai số toàn phương trung bình (RMSE), Sai số tuyệt đối trung bình (MAE), Sai số phần trăm tuyệt đối trung bình (MAPE) và Hệ số xác định (R²).
+4. **Diễn giải mô hình và đề xuất giải pháp ứng dụng (Model Interpretation & Practical Insights):**
+   * Áp dụng phương pháp phân tích tầm quan trọng của thuộc tính (Feature Importance) để giải thích cơ chế ra quyết định của mô hình ("Mở hộp đen học máy").
+   * Thiết lập cơ chế phát hiện bất thường: so sánh mức chi phí thực tế với mức chi phí do mô hình dự báo nhằm khoanh vùng Top 1% các cơ sở y tế (`Provider`) có chi phí lệch bất thường để đưa vào danh sách kiểm toán trọng điểm.
+
+---
+
+## 1.4. Đối tượng và Phạm vi nghiên cứu
+
+* **Đối tượng nghiên cứu:** 
+  * Đối tượng trung tâm của đề tài là **Chi phí bồi thường bảo hiểm y tế** được quỹ bảo hiểm chấp thuận thanh toán hoàn trả cho cơ sở y tế, được định lượng thông qua biến mục tiêu `InscClaimAmtReimbursed` (đơn vị tính: USD).
+  * Bên cạnh đó, nghiên cứu cũng khảo sát các yếu tố phát sinh chi phí y tế đi kèm như tiền khấu trừ tự chi trả của người bệnh (`DeductibleAmtPaid`), thời gian chiếm dụng giường bệnh nội trú (`Length of Stay`), và mức độ phức tạp của các mã bệnh tật/thủ thuật.
+* **Phạm vi về mặt dữ liệu:**
+  * Toàn bộ nghiên cứu được thực hiện trên **bộ dữ liệu PRJ04 do giảng viên cung cấp**, gồm hai tệp dữ liệu chi tiết:
+    1. Tệp Ngoại trú: `06_2521001108_PRJ04_Phan Thị Quế Trân (1).csv` gồm **517.737** dòng dữ liệu và 27 cột thuộc tính.
+    2. Tệp Nội trú: `06_2521001108_PRJ04_Phan Thị Quế Trân.csv (1).csv` gồm **9.551** dòng dữ liệu và 30 cột thuộc tính.
+  * Tổng quy mô tập dữ liệu ban đầu đạt **527.288 bản ghi giao dịch**. Ở bước khảo sát sơ bộ dữ liệu thô, khi tạm thời lọc các dòng mang giá trị số thuần không âm (chưa áp dụng bóc tách đơn vị), số bản ghi hợp lệ ban đầu ghi nhận là **452.487** hồ sơ ngoại trú và **6.982** hồ sơ nội trú. Trong quy trình tiền xử lý chi tiết tại Chương 2 và Chương 3, các dòng dính đơn vị tiền tệ/đo lường (gồm 33.289 dòng ở tệp ngoại trú và 453 dòng ở tệp nội trú) sẽ được phục hồi bằng biểu thức chính quy (Regex), do đó quy mô mẫu hợp lệ sau cùng phục vụ huấn luyện mô hình sẽ được cập nhật và tính toán lại chính xác tại Chương 3.
+  * **Nguồn gốc dữ liệu:** Căn cứ theo mô tả đề tài PRJ04 do giảng viên phụ trách học phần cung cấp, bộ dữ liệu được tổng hợp và mô phỏng dựa trên cấu trúc hồ sơ yêu cầu bồi thường Medicare DE-SynPUF của CMS trong khoảng thời gian từ **tháng 11/2008 đến tháng 12/2009**. Đây là **dữ liệu tổng hợp (Synthetic Data)** phục vụ mục đích học tập và nghiên cứu thực nghiệm khoa học dữ liệu, không chứa thông tin định danh y tế cá nhân (PHI).
+* **Phạm vi về mặt phương pháp:**
+  * Giới hạn trong khuôn khổ các phương pháp tiếp cận định lượng của Khoa học Dữ liệu (Data Science), Lý thuyết Rủi ro và Tổn thất Bảo hiểm (Actuarial Loss Models), kết hợp với các thuật toán Học máy có giám sát (Supervised Machine Learning) trên môi trường ngôn ngữ lập trình Python (với các thư viện lõi `pandas`, `numpy`, `scikit-learn`, `xgboost`, `statsmodels`).
+
+---
+
+## 1.5. Ý nghĩa lý luận và thực tiễn của đề tài
+
+### 1.5.1. Ý nghĩa lý luận (Theoretical Contributions)
+
+1. **Làm phong phú lý thuyết mô hình hóa tổn thất bảo hiểm (Actuarial Loss Modeling):** Đề tài đóng góp vào việc kiểm chứng và so sánh thực nghiệm hiệu năng giữa các thuật toán học máy hiện đại (Random Forest, XGBoost) với mô hình chuyên ngành GLM (Tweedie/Gamma) trong việc xử lý dữ liệu bồi thường có phân phối lệch phải cực đoan và nhiều điểm ngoại lai. Nghiên cứu giúp thu hẹp khoảng cách giữa lý thuyết định toán bảo hiểm truyền thống và các kỹ thuật khoa học dữ liệu đương đại [@frees2014; @kaas2008].
+2. **Cung cấp cơ sở phương pháp luận về kỹ nghệ đặc trưng y tế:** Đề tài chuẩn hóa quy trình chuyển đổi các dữ liệu danh mục y khoa phức tạp (như mã bệnh ICD-9, mã thủ thuật can thiệp ICD-9-CM, mã nhóm DRG) thành các chỉ số số học có ý nghĩa định lượng cao (`Diagnosis_Count`, `Procedure_Count`, `LOS`, `ClaimDuration`), đóng vai trò là tài liệu tham khảo giá trị cho các nghiên cứu tiếp theo trong cùng lĩnh vực.
+
+### 1.5.2. Ý nghĩa thực tiễn (Practical Contributions)
+
+1. **Đối với Cơ quan Quản lý và Doanh nghiệp Bảo hiểm (Insurers & CMS):**
+   * *Nâng cao hiệu quả định phí và trích lập dự phòng:* Hỗ trợ định chế bảo hiểm dự phóng dòng tiền chi trả trong tương lai, từ đó hỗ trợ kiểm soát rủi ro thiếu hụt thanh khoản và quản trị an toàn quỹ.
+   * *Tự động hóa nhận diện hồ sơ bất thường cần rà soát (Anomaly Detection & Screening):* Thay vì phải kiểm toán thủ công hàng triệu hồ sơ, mô hình hỗ trợ tự động sàng lọc và nhận diện các cơ sở y tế có tỷ lệ chênh lệch chi phí bất thường, giúp cơ quan chức năng tiết kiệm chi phí thanh tra và thu hồi dòng tiền thất thoát.
+2. **Đối với Cơ sở Y tế và Bệnh viện (Healthcare Providers):**
+   * Cung cấp góc nhìn minh bạch về cơ cấu viện phí, từ đó hỗ trợ ban quản lý bệnh viện tối ưu hóa thời gian lưu trú nội trú của bệnh nhân, hạn chế các chỉ định y tế dư thừa và nâng cao chất lượng dịch vụ chăm sóc sức khỏe.
+3. **Đối với Xã hội và Người tham gia bảo hiểm:**
+   * Việc bảo vệ nguồn quỹ BHYT công không bị thất thoát sẽ góp phần duy trì mức phí đóng bảo hiểm ở ngưỡng hợp lý, đảm bảo quyền lợi khám chữa bệnh lâu dài và công bằng cho mọi tầng lớp nhân dân trong xã hội.
+
+Bảng ma trận liên kết giữa Mục tiêu nghiên cứu, Câu hỏi nghiên cứu, Phương pháp thực hiện và Kết quả kỳ vọng được tổng hợp trong @tbl-ma-tran-nghien-cuu:
+
+::: {#tbl-ma-tran-nghien-cuu}
+| Mục Tiêu Cụ Thể | Câu Hỏi Nghiên Cứu Tương Ứng | Phương Pháp / Kỹ Thuật Python Áp Dụng | Kết Quả Kỳ Vọng Đầu Ra |
+| :--- | :--- | :--- | :--- |
+| **1. Kiểm toán & Làm sạch dữ liệu** | Quy trình kiểm toán và làm sạch dữ liệu cần thực hiện thế nào để xử lý triệt để các biến thể dữ liệu thiếu và dị thường số học? | Thiết kế thuật toán kiểm toán tự động, chuẩn hóa dữ liệu rác về `np.nan`, loại bỏ đơn vị đo lường bằng Regex, xử lý ngày cắt cụt, cô lập số âm. | Báo cáo kiểm toán 30 biến thuộc tính; bộ dữ liệu sạch đạt chuẩn sẵn sàng nạp vào mô hình. |
+| **2. Phân tích khám phá & Kỹ nghệ đặc trưng** | RQ1: Nhóm yếu tố nào chi phối mạnh nhất đến chi phí? RQ2: Ngoại trú và nội trú khác nhau ra sao? | Phân tích phân phối, trích xuất `LengthOfStay`, `ClaimDuration`, cờ bác sĩ phẫu thuật/hỗ trợ, tháng phát sinh hồ sơ, tính `Diagnosis_Count`, `Procedure_Count`. | Bảng thống kê mô tả, xác định cơ chế phân hóa chi phí giữa 2 hình thức điều trị. |
+| **3. Huấn luyện & So sánh mô hình** | RQ3: Mô hình học máy nào đạt độ chính xác dự báo cao nhất? | Huấn luyện OLS trên logarit, GLM (Gamma/Tweedie), Random Forest, XGBoost; tối ưu siêu tham số K-Fold CV. | Bảng so sánh chỉ số RMSE, MAE, MAPE, R²; chọn ra mô hình tối ưu nhất. |
+| **4. Diễn giải & Đề xuất ứng dụng** | RQ4: Làm thế nào để ứng dụng mô hình dự báo nhằm nhận diện các cơ sở y tế có chi phí lệch bất thường? | Phân tích Feature Importance, đo lường phần dư (độ lệch chi phí thực tế vs dự báo), xếp hạng phân vị bất thường. | Bảng xếp hạng Top 1% cơ sở y tế có chi phí lệch bất thường; khuyến nghị chính sách rà soát kiểm toán. |
+
+Bảng 1.2: Ma trận liên kết Mục tiêu nghiên cứu, Câu hỏi nghiên cứu và Phương pháp thực hiện
+:::
+::: {.source-note}
+*Nguồn: Nhóm tác giả tổng hợp và xây dựng (2026)*
+:::
+
+{{< pagebreak >}}
+
+# TÀI LIỆU THAM KHẢO {.unnumbered}
+
+::: {#refs}
+:::
