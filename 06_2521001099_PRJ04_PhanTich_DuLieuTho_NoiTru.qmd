@@ -1,0 +1,397 @@
+---
+title: "Báo Cáo Phân Tích Nguồn Gốc Dữ Liệu, Quy Trình Phát Sinh và Từ Điển Biến Số Hồ Sơ Bồi Thường Nội Trú (CMS Medicare Inpatient Claims)"
+subtitle: "Đề tài PRJ-04: Xây dựng Mô hình Dự báo Chi phí Bồi thường Bảo hiểm Y tế (Medical Insurance Claims & Cost Prediction)"
+author:
+  - name: "Nguyễn Ngọc Phương Thảo"
+    affil-id: 1
+    metadata:
+      role: "Nhóm trưởng"
+      id: "2521001099"
+  - name: "Phan Thị Quế Trân"
+    affil-id: 1
+    metadata:
+      role: "Thành viên"
+      id: "2521001108"
+affiliations:
+  - id: 1
+    name: "Khoa Hệ thống Thông tin Kinh tế & Chuyên ngành Bảo hiểm - Thẩm định Tài chính"
+date: "2026-11-17"
+format:
+  docx:
+    toc: true
+    number-sections: true
+    highlight-style: github
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    code-fold: false
+    theme: cosmo
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+# TỔNG QUAN TỆP DỮ LIỆU THÔ PHÂN TÍCH
+
+Báo cáo chuyên đề này thực hiện phân tích toàn diện tệp dữ liệu thô hồ sơ bồi thường điều trị nội trú:
+- **Tên tệp lưu trữ:** `06_2521001108_PRJ04_Phan Thị Quế Trân_raw_dirty.csv.csv`
+- **Định dạng:** Văn bản phân tách bởi dấu phẩy (Comma-Separated Values - CSV), bảng mã UTF-8.
+- **Quy mô ma trận dữ liệu:** **9,551 quan sát (dòng)** $\times$ **30 thuộc tính (cột)**.
+- **Dung lượng tệp:** Xấp xỉ **1.56 MB** (1,560,434 bytes).
+- **Mục tiêu phân tích:** Làm rõ nguồn gốc phát sinh dữ liệu y tế, tái hiện chu trình vận hành nghiệp vụ từ lúc bệnh nhân nhập viện đến khi nhận chi trả bồi thường, xác định chuẩn xác bản chất đơn vị quan sát của từng dòng, và thiết lập bảng từ điển dữ liệu 30 biến số chuẩn hóa kèm báo cáo kiểm toán các dạng lỗi "bẩn" (dirty anomalies) cần xử lý trước khi đưa vào mô hình học máy.
+
+---
+
+# 1. NGUỒN GỐC DỮ LIỆU VÀ BỐI CẢNH NGHIỆP VỤ BẢO HIỂM Y TẾ
+
+## 1.1. Cơ quan Quản lý và Đơn vị Ban hành Dữ liệu
+
+Tệp dữ liệu phân tích có nguồn gốc xuất xứ chính thức từ **Cơ quan Quản lý Dịch vụ Y tế Medicare & Medicaid Hoa Kỳ (Centers for Medicare & Medicaid Services - CMS)**, cơ quan liên bang trực thuộc **Bộ Y tế và Dịch vụ Nhân sinh Hoa Kỳ (U.S. Department of Health and Human Services - HHS)**.
+
+CMS là tổ chức công chịu trách nhiệm điều hành các chương trình bảo hiểm y tế lớn nhất nước Mỹ, bao gồm:
+1. **Medicare:** Chương trình bảo hiểm y tế quốc gia dành cho người cao tuổi từ 65 tuổi trở lên, cùng một số nhóm người trẻ tuổi mắc bệnh lý khuyết tật dài hạn hoặc suy thận giai đoạn cuối (End-Stage Renal Disease - ESRD).
+2. **Medicaid & CHIP:** Chương trình hỗ trợ y tế liên bang và tiểu bang dành cho cá nhân và gia đình có thu nhập thấp, trẻ em và phụ nữ mang thai.
+
+Tệp dữ liệu này thuộc cấu phần **Medicare Part A (Hospital Insurance)** – phân hệ chuyên trách chi trả các chi phí chăm sóc y tế nội trú tại các bệnh viện đa khoa, trung tâm phục hồi chức năng chuyên sâu, cơ sở điều dưỡng chuyên môn và dịch vụ chăm sóc giảm nhẹ (Hospice care).
+
+## 1.2. Bản chất Bộ Dữ liệu: CMS Data Entrepreneurs' Synthetic Public Use File (DE-SynPUF)
+
+Nhằm thúc đẩy nghiên cứu khoa học, đổi mới sáng tạo trong Khoa học Dữ liệu Y tế (Healthcare Data Science) và hỗ trợ các doanh nghiệp công nghệ phát triển thuật toán dự báo chi phí mà không xâm phạm quyền riêng tư của bệnh nhân, CMS đã phát hành bộ dữ liệu **CMS 2008–2010 Data Entrepreneurs' Synthetic Public Use File (DE-SynPUF)**.
+
+**Các đặc tính cốt lõi của bộ dữ liệu:**
+- **Kỹ thuật Tổng hợp Bảo mật (Synthetic Data Generation):** Dữ liệu được tạo lập bằng các thuật toán tổng hợp thống kê phức tạp dựa trên dữ liệu yêu cầu bồi thường Medicare thực tế 100%. Quy trình này bảo đảm tuân thủ nghiêm ngặt **Đạo luật về Trách nhiệm Giải trình và Chuyển đổi Bảo hiểm Y tế Hoa Kỳ (Health Insurance Portability and Accountability Act - HIPAA)**.
+- **Bảo toàn Tính chất Thống kê và Quy luật Phân phối:** Toàn bộ thông tin định danh cá nhân trực tiếp (Direct PII) như Họ tên, Số an sinh xã hội (SSN), Địa chỉ cư trú chi tiết đã được thay thế bằng mã băm ẩn danh (`BeneID`, `Provider`, `Physician IDs`). Tuy nhiên, bộ dữ liệu **bảo toàn trọn vẹn logic lâm sàng**: mối tương quan giữa mã chẩn đoán bệnh tật ICD-9-CM, mã nhóm thanh toán trọn gói DRG (`DiagnosisGroupCode`), thời gian nằm viện (`LengthOfStay`), tỷ lệ can thiệp phẫu thuật, và phân phối chi phí bồi hoàn thực tế (`InscClaimAmtReimbursed`).
+- **Phân hệ dữ liệu:** Tệp đang phân tích chính là phân hệ **Inpatient Claims (Hồ sơ yêu cầu bồi thường điều trị nội trú)** của bộ dữ liệu CMS SynPUF trong giai đoạn 2008–2009.
+
+## 1.3. Bối cảnh "Dữ liệu Thô" (Synthetic Dirty Injection) Trong Đồ án
+
+Trong môi trường thực tế tại các bệnh viện và công ty bảo hiểm, dữ liệu bồi thường không bao giờ ở trạng thái sạch hoàn hảo mà luôn bị biến dạng bởi nhiều yếu tố khách quan:
+1. **Nhập liệu thủ công phân tán:** Hàng trăm nhân viên y tế và kế toán viện phí tại các khoa phòng thao tác trên nhiều giao diện khác nhau, dẫn đến hiện tượng tự ý chèn đơn vị tiền tệ hoặc ký hiệu đo lường vào ô nhập số (ví dụ: `4000 USD`, `26000 VND`, `4000 đ`, `10000 %`, `5000 kg`).
+2. **Lỗi truyền nhận và cắt cụt chuỗi dữ liệu (Data Truncation):** Quá trình kết xuất dữ liệu qua các cổng giao tiếp chuẩn EDI (Electronic Data Interchange) có thể làm đứt đoạn trường ngày tháng (ví dụ: `2009-05-` bị mất phần ngày).
+3. **Giao dịch điều chỉnh kế toán (Claim Adjustments & Reversals):** Các nghiệp vụ ghi giảm viện phí, hủy hồ sơ bồi thường do trùng lặp hoặc khiếu nại bồi hoàn tạo ra các khoản chi phí âm (ví dụ: `-1`, `-7000.0`, `-1068.0`).
+4. **Ký hiệu khuyết thiếu không nhất quán:** Thay vì để ô trống (`NULL`), hệ thống ghi nhận các chuỗi ký tự tự do như `?`, `chưa rõ`, `unknown`, `nan`, `NAN`.
+
+Tệp dữ liệu `06_2521001108_PRJ04_Phan Thị Quế Trân_raw_dirty.csv.csv` phản ánh chính xác tình trạng "dữ liệu thô thực tế" này, đặt ra yêu cầu sinh viên phải xây dựng quy trình tiền xử lý, kiểm toán chất lượng và làm sạch bài bản trước khi mô hình hóa.
+
+---
+
+# 2. QUY TRÌNH PHÁT SINH DỮ LIỆU: TỪ KHÁM CHỮA BỆNH ĐẾN HỒ SƠ BỒI THƯỜNG
+
+Quy trình phát sinh dữ liệu của một hồ sơ bồi thường điều trị nội trú là một chuỗi cung ứng dịch vụ y tế và thẩm định tài chính khép kín gồm 5 giai đoạn liên hoàn giữa 3 chủ thể: **Người bệnh (Patient / Beneficiary)**, **Cơ sở y tế (Healthcare Provider / Hospital)**, và **Cơ quan bảo hiểm (Payer / CMS / Insurance Company)**.
+
+## 2.1. Sơ đồ Luồng Phát sinh Dữ liệu Bồi thường Nội trú (End-to-End Workflow)
+
+```{mermaid}
+%%| label: fig-inpatient-claim-lifecycle
+%%| fig-cap: "Chu trình Nghiệp vụ Phát sinh Hồ sơ Bồi thường Điều trị Nội trú CMS Medicare."
+flowchart TD
+    subgraph STAGE1["GIAI ĐOẠN 1: TIẾP NHẬN & CHỈ ĐỊNH NHẬP VIỆN"]
+        direction TB
+        A1["Bệnh nhân xuất trình thẻ Medicare Part A<br/><b>(Ghi nhận BeneID)</b>"] --> A2["Bác sĩ Khoa cấp cứu / Phòng khám khám lâm sàng"]
+        A2 --> A3["Xác định tình trạng bệnh nặng cần nằm viện<br/><b>(Ghi nhận ClmAdmitDiagnosisCode)</b>"]
+        A3 --> A4["Ký lệnh nhập viện chính thức<br/><b>(Ghi nhận AdmissionDt, ClaimStartDt, AttendingPhysician)</b>"]
+    end
+
+    subgraph STAGE2["GIAI ĐOẠN 2: ĐIỀU TRỊ NỘI TRÚ & PHẪU THUẬT"]
+        direction TB
+        B1["Bệnh nhân lưu trú qua đêm tại buồng bệnh<br/><b>(Theo dõi diễn tiến lâm sàng)</b>"] --> B2{"Có chỉ định phẫu thuật / thủ thuật không?"}
+        B2 -- "Có (56.9% hồ sơ)" --> B3["Phẫu thuật viên & Kíp mổ can thiệp<br/><b>(Ghi nhận OperatingPhysician, OtherPhysician)</b><br/><b>(Mã hóa ClmProcedureCode_1 đến _6)</b>"]
+        B2 -- "Không (43.1% hồ sơ)" --> B4["Điều trị nội khoa, dùng thuốc, chăm sóc tích cực"]
+        B3 --> B5["Ghi nhận chẩn đoán chính và các bệnh đồng mắc phát sinh<br/><b>(Mã hóa ClmDiagnosisCode_1 đến _10)</b>"]
+        B4 --> B5
+    end
+
+    subgraph STAGE3["GIAI ĐOẠN 3: XUẤT VIỆN & MÃ HÓA LÂM SÀNG (DRG)"]
+        direction TB
+        C1["Bác sĩ đánh giá đủ điều kiện ra viện<br/><b>(Ghi nhận DischargeDt, ClaimEndDt)</b>"] --> C2["Tính toán Số ngày nằm viện<br/><b>LengthOfStay = DischargeDt - AdmissionDt</b>"]
+        C2 --> C3["Phòng Kế hoạch Tổng hợp & Mã hóa Y tế hoàn thiện bệnh án"]
+        C3 --> C4["Phần mềm CMS Grouper tự động phân nhóm chẩn đoán thanh toán trọn gói<br/><b>(Gán mã DiagnosisGroupCode - DRG)</b>"]
+    end
+
+    subgraph STAGE4["GIAI ĐOẠN 4: LẬP HÓA ĐƠN & NỘP HỒ SƠ ĐIỆN TỬ"]
+        direction TB
+        D1["Phòng Tài chính - Kế toán bệnh viện tập hợp chi phí"] --> D2["Gán mã định danh duy nhất cho hồ sơ bồi thường<br/><b>(Ghi nhận ClaimID)</b>"]
+        D2 --> D3["Xác định mức khấu trừ tự chi trả đầu kỳ của bệnh nhân<br/><b>(Ghi nhận DeductibleAmtPaid, chuẩn 1,068 USD)</b>"]
+        D3 --> D4["Đóng gói hồ sơ điện tử theo chuẩn EDI 837I Institutional Claim<br/><b>(Gửi tới Cổng tiếp nhận bảo hiểm CMS)</b>"]
+    end
+
+    subgraph STAGE5["GIAI ĐOẠN 5: THẨM ĐỊNH & CHI TRẢ BỒI HOÀN"]
+        direction TB
+        E1["Hệ thống Core Claims của CMS tiếp nhận hồ sơ EDI 837I"] --> E2["Kiểm tra điều kiện hợp lệ thẻ bảo hiểm và thời hạn bảo hiểm"]
+        E2 --> E3["Thẩm định mã DRG, tính đơn giá thanh toán trọn gói IPPS"]
+        E3 --> E4["Trừ đi khoản tự chi trả DeductibleAmtPaid<br/><b>Phê duyệt số tiền bảo hiểm bồi hoàn: InscClaimAmtReimbursed</b>"]
+        E4 --> E5["Chuyển tiền bồi hoàn vào tài khoản của Bệnh viện (Provider)<br/><b>Lưu vết giao dịch vào Kho dữ liệu CMS Inpatient Claims</b>"]
+    end
+
+    STAGE1 --> STAGE2
+    STAGE2 --> STAGE3
+    STAGE3 --> STAGE4
+    STAGE4 --> STAGE5
+```
+
+## 2.2. Chi tiết 5 Giai đoạn Vận hành Nghiệp vụ
+
+### Giai đoạn 1: Tiếp nhận và Chỉ định Nhập viện (Patient Admission & Eligibility Verification)
+- **Hoạt động thực tế:** Người thụ hưởng chương trình Medicare Part A (`BeneID`) xuất hiện tại Khoa Cấp cứu hoặc Khoa Khám bệnh của một bệnh viện hợp đồng (`Provider`). Bác sĩ khám lâm sàng đánh giá tình trạng bệnh nhân cần phải theo dõi điều trị nội trú qua đêm.
+- **Biến số phát sinh:**
+  - `BeneID`: Mã định danh người thụ hưởng bảo hiểm.
+  - `Provider`: Mã cơ sở y tế nơi tiếp nhận bệnh nhân.
+  - `AdmissionDt`: Ngày và giờ bệnh nhân chính thức làm thủ tục nhập viện.
+  - `ClaimStartDt`: Ngày bắt đầu kỳ tính chi phí bồi thường (thường trùng với `AdmissionDt` trong điều trị nội trú).
+  - `ClmAdmitDiagnosisCode`: Mã chẩn đoán ban đầu lúc nhập viện (theo chuẩn phân loại quốc tế ICD-9-CM). Đây là lý do chính khiến bệnh nhân phải nhập viện cấp cứu.
+  - `AttendingPhysician`: Mã định danh của bác sĩ phụ trách điều trị chính trong suốt đợt nằm viện.
+
+### Giai đoạn 2: Quá trình Điều trị Nội trú và Can thiệp Phẫu thuật / Thủ thuật (Inpatient Care & Surgical Interventions)
+- **Hoạt động thực tế:** Bệnh nhân nằm điều trị tại buồng bệnh nội trú, được theo dõi sinh hiệu, xét nghiệm định kỳ, dùng thuốc và chăm sóc dinh dưỡng.
+  - Nếu bệnh lý nghiêm trọng đòi hỏi can thiệp ngoại khoa: Kíp phẫu thuật thực hiện mổ dưới sự chỉ huy của bác sĩ phẫu thuật viên chính (`OperatingPhysician`) cùng bác sĩ phụ mổ hoặc bác sĩ gây mê hồi sức (`OtherPhysician`).
+  - Trong thực tế dữ liệu của tệp này, có tới **56.9%** hồ sơ nội trú có phát sinh can thiệp ngoại khoa (trong khi ở hồ sơ khám ngoại trú tỷ lệ này chỉ là 0.03%).
+- **Biến số phát sinh:**
+  - `OperatingPhysician`: Mã bác sĩ thực hiện phẫu thuật / thủ thuật chính.
+  - `OtherPhysician`: Mã bác sĩ hỗ trợ, bác sĩ gây mê hoặc bác sĩ tư vấn chuyên khoa.
+  - `ClmProcedureCode_1` đến `ClmProcedureCode_6`: Danh sách tối đa 6 mã thủ thuật ngoại khoa thực hiện trong đợt điều trị (theo bảng phân loại thủ thuật ICD-9-CM Volume 3).
+  - `ClmDiagnosisCode_1` đến `ClmDiagnosisCode_10`: Danh sách tối đa 10 mã chẩn đoán bệnh tật, bao gồm:
+    - `ClmDiagnosisCode_1`: Chẩn đoán chính (Principal Diagnosis) – nguyên nhân chính sau thăm khám được xác định là nguyên nhân gây ra đợt nằm viện.
+    - `ClmDiagnosisCode_2` đến `_10`: Các chẩn đoán phụ (Secondary Diagnoses), bao gồm các bệnh lý mãn tính mắc kèm từ trước (Comorbidities) và các biến chứng y khoa phát sinh trong quá trình điều trị (Complications).
+
+### Giai đoạn 3: Xuất viện và Phân nhóm Thanh toán Trọn gói DRG (Discharge, Medical Coding & DRG Grouping)
+- **Hoạt động thực tế:** Sau khi tình trạng sức khỏe ổn định, bác sĩ điều trị ký y lệnh xuất viện (`DischargeDt`). Toàn bộ hồ sơ bệnh án được chuyển sang **Phòng Kế hoạch Tổng hợp & Mã hóa Y tế (Medical Records and Health Information Department)**.
+  - Các chuyên viên mã hóa y tế (Medical Coders) chuẩn hóa toàn bộ ghi chép bệnh án sang hệ thống mã ICD-9-CM.
+  - Hồ sơ được nạp vào phần mềm chuẩn của CMS gọi là **CMS DRG Grouper**. Phần mềm này phân tích đồng thời: Chẩn đoán chính (`ClmDiagnosisCode_1`), Chẩn đoán phụ kèm biến chứng nặng (Major Complications or Comorbidities - MCC), các mã thủ thuật can thiệp (`ClmProcedureCode`), và thời gian nằm viện (`LengthOfStay = DischargeDt - AdmissionDt`).
+  - Kết quả phân nhóm cho ra **Mã nhóm chẩn đoán thanh toán trọn gói (Diagnosis-Related Group - DRG)**.
+- **Biến số phát sinh:**
+  - `DischargeDt`: Ngày bệnh nhân chính thức làm thủ tục xuất viện.
+  - `ClaimEndDt`: Ngày kết thúc kỳ tính phí bồi thường (thường trùng với `DischargeDt`).
+  - `DiagnosisGroupCode`: Mã nhóm thanh toán DRG (gồm 3 chữ số, ví dụ: 332, 661, 241...). Mã này quyết định mức khung chi trả viện phí trọn gói của bảo hiểm y tế liên bang theo hệ thống chi trả triển vọng nội trú (Inpatient Prospective Payment System - IPPS).
+
+### Giai đoạn 4: Lập Hóa đơn Viện phí và Nộp Hồ sơ Điện tử (Hospital Billing & EDI Claim Submission)
+- **Hoạt động thực tế:** Phòng Tài chính - Kế toán bệnh viện tổng hợp toàn bộ chi phí thực tế phát sinh, lập bảng kê viện phí và xác lập hồ sơ yêu cầu chi trả bồi thường điện tử.
+  - Hệ thống Core Bệnh viện (HIS) tự động sinh ra mã giao dịch bồi thường duy nhất (`ClaimID`).
+  - Căn cứ theo quy định của Medicare Part A, bệnh nhân có trách nhiệm tự chi trả một khoản khấu trừ cố định cho mỗi kỳ nằm viện (Inpatient Deductible). Trong năm 2008–2009, mức khấu trừ chuẩn này là **1,068 USD**.
+- **Biến số phát sinh:**
+  - `ClaimID`: Khóa chính định danh duy nhất của giao dịch hồ sơ bồi thường.
+  - `DeductibleAmtPaid`: Số tiền khấu trừ người bệnh tự chi trả cho bệnh viện trước khi bảo hiểm tham gia thanh toán.
+  - Hồ sơ được đóng gói dưới định dạng chuẩn điện tử y tế **EDI 837I (Electronic Data Interchange - Institutional Claim)** và truyền qua mạng truyền thông an toàn đến Cổng tiếp nhận hồ sơ bồi thường (Clearinghouse / CMS MAC).
+
+### Giai đoạn 5: Thẩm định Tự động và Chi trả Bồi hoàn (Claims Adjudication & Reimbursement)
+- **Hoạt động thực tế:** Hệ thống thẩm định tự động của cơ quan bảo hiểm (CMS Claims Adjudication Engine) tiếp nhận hồ sơ EDI 837I, tiến hành rà soát tự động:
+  1. Kiểm tra tính hợp lệ của mã thẻ người thụ hưởng (`BeneID`) và quyền lợi bảo hiểm còn hiệu lực.
+  2. Kiểm tra tính tương thích giữa mã chẩn đoán chính (`ClmDiagnosisCode_1`), thủ thuật ngoại khoa (`ClmProcedureCode_1`) và mã nhóm thanh toán DRG (`DiagnosisGroupCode`).
+  3. Áp dụng công thức tính mức thanh toán trọn gói IPPS:
+     $$\text{Mức thanh toán chuẩn DRG} \times \text{Hệ số trọng số bệnh tật (Relative Weight)} \times \text{Hệ số điều chỉnh chi phí tiền lương vùng (Wage Index)}$$
+  4. Khấu trừ đi khoản tiền người bệnh đã tự chi trả (`DeductibleAmtPaid`).
+  5. Ra quyết định phê duyệt số tiền bồi hoàn thực tế bảo hiểm chi trả cho cơ sở y tế (`InscClaimAmtReimbursed`).
+- **Biến số phát sinh:**
+  - `InscClaimAmtReimbursed`: Số tiền bồi hoàn thực tế được cơ quan bảo hiểm chi trả cho bệnh viện (Biến mục tiêu $Y$ của đề tài PRJ-04).
+  - Bản ghi giao dịch hoàn tất được lưu trữ vào Cơ sở Dữ liệu Hồ sơ Bồi thường Nội trú (Inpatient Claims Data Warehouse) của CMS.
+
+---
+
+# 3. ĐƠN VỊ QUAN SÁT VÀ Ý NGHĨA CỦA MỖI DÒNG DỮ LIỆU
+
+## 3.1. Định nghĩa Đơn vị Quan sát (Unit of Observation / Granularity)
+
+Trong tệp dữ liệu `06_2521001108_PRJ04_Phan Thị Quế Trân_raw_dirty.csv.csv`:
+> **MỖI DÒNG DỮ LIỆU ĐẠI DIỆN CHO MỘT HỒ SƠ YÊU CẦU BỒI THƯỜNG BẢO HIỂM Y TẾ CHO MỘT ĐỢT ĐIỀU TRỊ NỘI TRÚ CỤ THỂ (A Single Inpatient Hospitalization Claim Record).**
+
+Điều này có các hàm ý nghiệp vụ và thống kê cực kỳ quan trọng:
+1. **Một dòng KHÔNG PHẢI là một bệnh nhân:** Một người thụ hưởng (`BeneID`) có thể tái nhập viện nhiều lần trong kỳ dữ liệu (2008–2009), do đó mã `BeneID` có thể xuất hiện lặp lại ở nhiều dòng khác nhau với các mã `ClaimID` độc lập.
+2. **Một dòng KHÔNG PHẢI là một dịch vụ hay đơn thuốc:** Đây là hồ sơ bồi thường ở cấp độ tổng hợp toàn bộ đợt nằm viện (Stay-level Claim), không phải bảng chi tiết từng mục dịch vụ kỹ thuật (Line-item details).
+3. **Mỗi dòng phản ánh một đợt lưu trú qua đêm:** Bắt buộc có ngày nhập viện (`AdmissionDt`) và ngày xuất viện (`DischargeDt`) hợp lệ để xác định thời gian nằm viện (`LengthOfStay`).
+
+## 3.2. Cấu trúc Khóa và Mối quan hệ Liên kết Dữ liệu
+
+| Loại Khóa | Tên Thuộc Tính | Vai Trò và Ý Nghĩa Nghiệp Vụ | Hiện Trạng Trong Tệp Thô |
+| :--- | :--- | :--- | :--- |
+| **Khóa chính Logic (Primary Key)** | `ClaimID` | Định danh duy nhất cho mỗi giao dịch hồ sơ bồi hoàn. Không được phép trùng lặp hoặc rỗng. | **Bị khuyết / lỗi 2,009 dòng (~21.03%)**, mang giá trị `?`, `chưa rõ`, `unknown`, `NaN`, hoặc dính khoảng trắng. |
+| **Khóa ngoại Thực thể (Foreign Key)** | `BeneID` | Mã định danh người thụ hưởng bảo hiểm Medicare. Dùng để liên kết với lịch sử bệnh án và các đợt khám khác của cùng một bệnh nhân. | Có 7,764 mã người thụ hưởng duy nhất. Bị khuyết / lỗi 1,044 dòng (~10.93%). |
+| **Khóa ngoại Cơ sở Y tế (Foreign Key)** | `Provider` | Mã định danh cơ sở y tế / Bệnh viện điều trị nơi phát sinh chi phí bồi thường. | Có 722 bệnh viện duy nhất. Bị khuyết / lỗi 1,332 dòng (~13.95%). |
+| **Khóa tham chiếu Bác sĩ (Reference Keys)** | `AttendingPhysician`, `OperatingPhysician`, `OtherPhysician` | Mã định danh của các bác sĩ chịu trách nhiệm điều trị, phẫu thuật và hỗ trợ chuyên môn. | Phụ thuộc vào tính chất ca bệnh: ca phẫu thuật mới phát sinh `OperatingPhysician`. |
+
+## 3.3. Quy mô Mẫu và Cấu trúc Toàn thể Tệp Thô
+
+- **Tổng số dòng quan sát:** **9,551** bản ghi.
+- **Tổng số cột biến số:** **30** trường thông tin.
+- **Ma trận kích thước ô dữ liệu:** $9,551 \times 30 = 286,530$ ô dữ liệu.
+- **Độ hoàn thiện tổng thể:** Có sự phân hóa rõ rệt: các cột chẩn đoán lâm sàng (`ClmAdmitDiagnosisCode`, `DiagnosisGroupCode`, `ClmDiagnosisCode_1`) đạt độ đầy đủ **100%**, trong khi các cột mã thủ thuật bậc cao (`ClmProcedureCode_3` đến `_6`) có tỷ lệ rỗng rất cao do trong thực tế y khoa hiếm có ca bệnh nào thực hiện quá 2 thủ thuật ngoại khoa lớn trong cùng một đợt nằm viện.
+
+---
+
+# 4. DANH SÁCH VÀ TỪ ĐIỂN BIẾN SỐ CHI TIẾT (DATA DICTIONARY)
+
+30 biến số trong tệp được phân loại một cách khoa học thành **6 nhóm chức năng nghiệp vụ**:
+1. Nhóm Khóa & Định danh Tham chiếu (6 biến)
+2. Nhóm Thuộc tính Thời gian Đợt khám & Điều trị (4 biến)
+3. Nhóm Thuộc tính Tài chính & Chi phí (2 biến)
+4. Nhóm Phân nhóm Thanh toán Bệnh viện Trọn gói DRG (1 biến)
+5. Nhóm Chẩn đoán Y khoa Lâm sàng ICD-9-CM (11 biến)
+6. Nhóm Thủ thuật Can thiệp Ngoại khoa ICD-9-CM (6 biến)
+
+## 4.1. Bảng Từ điển 30 Biến Số và Báo cáo Kiểm toán Chất lượng Dữ liệu Thô
+
+| STT | Tên Biến | Nhóm Thuộc Tính | Kiểu Gốc | Kiểu Đích | Tỷ Lệ Sạch (%) | Ý Nghĩa Thực Tế & Nghiệp Vụ Bảo Hiểm | Các Dạng Lỗi Bẩn Trong Tệp Thô | Giá Trị Mẫu Thô |
+| :---: | :--- | :--- | :---: | :---: | :---: | :--- | :--- | :--- |
+| **1** | `BeneID` | Khóa & Tham chiếu | `object` | `string` | **89.07%** | Mã định danh duy nhất của người thụ hưởng bảo hiểm Medicare | Trộn lẫn chữ thường (`bene11014`), khoảng trắng (`  BENE1102`), dấu `?` (122 dòng) | `bene11014`, `BENE11017` |
+| **2** | `ClaimID` | Khóa & Tham chiếu | `object` | `string` | **78.97%** | Khóa chính định danh duy nhất của hồ sơ yêu cầu bồi thường nội trú | Khuyết `NaN` (1,272 dòng), dấu `?` (228 dòng), chuỗi `chưa rõ`, `unknown`, dính khoảng trắng | `CLM67387`, `  CLM446`, `?` |
+| **3** | `ClaimStartDt` | Thời gian | `object` | `datetime` | **80.41%** | Ngày bắt đầu tính chi phí yêu cầu bồi thường của hồ sơ | Bị cắt cụt ngày (`  2009-05-`), dính khoảng trắng, chuỗi `chưa rõ`, `unknown`, `?` | `2009-09-09`, `  2009-05-` |
+| **4** | `ClaimEndDt` | Thời gian | `object` | `datetime` | **75.08%** | Ngày kết thúc kỳ tính chi phí bồi thường của hồ sơ | Bị cắt cụt ngày (`  2009-01-`), chuỗi `unknown`, `chưa rõ`, dấu `?`, khoảng trắng | `2009-01-08`, `  2009-01-` |
+| **5** | `Provider` | Khóa & Tham chiếu | `object` | `string` | **86.05%** | Mã định danh cơ sở y tế / Bệnh viện điều trị | Chữ thường (`prv57070`), khoảng trắng thừa, dấu `?` (151 dòng), `NaN` (710 dòng) | `PRV57070`, `prv53758`, `?` |
+| **6** | `InscClaimAmtReimbursed` | Tài chính (**Target $Y$**) | `object` | `float64` | **84.64%** | Số tiền bồi hoàn thực tế bảo hiểm Medicare chi trả cho hồ sơ (USD) | Gắn đơn vị (`USD`, `VND`, `đ`, `%`, `kg`), số âm (`-1`, `-7000.0`), dấu `?`, khoảng trắng | `9000`, `4000 USD`, `-7000.0` |
+| **7** | `AttendingPhysician` | Khóa & Tham chiếu | `object` | `string` | **69.29%** | Mã định danh bác sĩ chịu trách nhiệm điều trị chính | Trộn chữ thường (`phy3177`), dấu `?` (383 dòng), chuỗi `chưa rõ`, `unknown`, `NAN` | `PHY3177`, `phy427017`, `?` |
+| **8** | `OperatingPhysician` | Khóa & Tham chiếu | `object` | `string` | **48.05%** | Mã định danh bác sĩ thực hiện phẫu thuật / thủ thuật chính | Tự nhiên khuyết ở ca không mổ (~43.1%); lẫn chuỗi `NAN`, `?`, chữ thường | `phy427017`, `PHY426644`, `NAN` |
+| **9** | `OtherPhysician` | Khóa & Tham chiếu | `object` | `string` | **9.07%** | Mã định danh bác sĩ phụ tá, bác sĩ gây mê hoặc hội chẩn | Chỉ phát sinh ở ca mổ phức tạp (~9%); phần lớn khuyết tự nhiên hoặc mang chuỗi `NAN` | `PHY3412`, `nan   `, `?` |
+| **10** | `AdmissionDt` | Thời gian | `object` | `datetime` | **79.50%** | Ngày và giờ bệnh nhân chính thức làm thủ tục nhập viện | Bị cắt cụt ngày (`  2009-05-`), dính khoảng trắng, chuỗi `chưa rõ`, `unknown`, `?` | `2009-09-09`, `  2009-05-` |
+| **11** | `ClmAdmitDiagnosisCode` | Chẩn đoán ICD | `object` | `string` | **100.0%** | Mã chẩn đoán bệnh lý ban đầu tại thời điểm nhập viện (ICD-9-CM) | Đầy đủ 100%, một số mã bị tự động ép kiểu thành số thực dạng chuỗi (`5789.0`) | `5789`, `5939`, `4019` |
+| **12** | `DeductibleAmtPaid` | Tài chính | `object` | `float64` | **94.00%** | Số tiền khấu trừ tự chi trả của người bệnh theo Medicare Part A (USD) | Gắn đơn vị (`1068 đ`, `1068 VND`, `%`, `kg`), số âm (`-1`, `-1068.0`), chuỗi `nan VND` | `1068`, `1068 đ`, `-1068.0` |
+| **13** | `DischargeDt` | Thời gian | `object` | `datetime` | **80.84%** | Ngày bệnh nhân chính thức làm thủ tục xuất viện | Bị cắt cụt ngày (`  2009-07-`), chuỗi `unknown`, `chưa rõ`, dấu `?`, khoảng trắng | `2009-09-16`, `  2009-07-` |
+| **14** | `DiagnosisGroupCode` | Thanh toán DRG | `object` | `string` | **100.0%** | Mã nhóm chẩn đoán trọn gói thanh toán bệnh viện IPPS (CMS DRG) | Đầy đủ 100%, mã gồm 3 chữ số quy định khung chi trả trọn gói của Medicare | `332`, `661`, `241` |
+| **15** | `ClmDiagnosisCode_1` | Chẩn đoán ICD | `object` | `string` | **100.0%** | Mã chẩn đoán chính (Principal Diagnosis) sau xuất viện (ICD-9-CM) | Đầy đủ 100%, không bị khuyết; một số mã dính khoảng trắng hoặc định dạng float | `5780`, `1889`, `  4010` |
+| **16** | `ClmDiagnosisCode_2` | Chẩn đoán ICD | `object` | `string` | **99.43%** | Mã chẩn đoán bệnh đồng mắc / biến chứng thứ 2 | Chỉ khuyết 54 dòng (0.57%), một số mã có đuôi `.0` | `5533`, `41071`, `78791` |
+| **17** | `ClmDiagnosisCode_3` | Chẩn đoán ICD | `object` | `string` | **98.23%** | Mã chẩn đoán bệnh đồng mắc / biến chứng thứ 3 | Khuyết 169 dòng (1.77%) | `496`, `5990`, `  60000` |
+| **18** | `ClmDiagnosisCode_4` | Chẩn đoán ICD | `object` | `string` | **95.77%** | Mã chẩn đoán bệnh đồng mắc / biến chứng thứ 4 | Khuyết 404 dòng (4.23%), xuất hiện mã chữ bắt đầu bằng `V` (ví dụ `V420`) | `V420`, `5601`, `41401` |
+| **19** | `ClmDiagnosisCode_5` | Chẩn đoán ICD | `object` | `string` | **92.47%** | Mã chẩn đoán bệnh đồng mắc / biến chứng thứ 5 | Khuyết 719 dòng (7.53%), dính khoảng trắng | `40390`, ` 4588`, `V1254` |
+| **20** | `ClmDiagnosisCode_6` | Chẩn đoán ICD | `object` | `string` | **87.47%** | Mã chẩn đoán bệnh đồng mắc / biến chứng thứ 6 | Khuyết 1,197 dòng (12.53%) | `2851`, ` 5845`, `4372` |
+| **21** | `ClmDiagnosisCode_7` | Chẩn đoán ICD | `object` | `string` | **81.82%** | Mã chẩn đoán bệnh đồng mắc / biến chứng thứ 7 | Khuyết 1,736 dòng (18.18%) | `5990`, `4549`, `78650` |
+| **22** | `ClmDiagnosisCode_8` | Chẩn đoán ICD | `object` | `string` | **75.29%** | Mã chẩn đoán bệnh đồng mắc / biến chứng thứ 8 | Khuyết 2,360 dòng (24.71%) | `570`, `29570`, `7813` |
+| **23** | `ClmDiagnosisCode_9` | Chẩn đoán ICD | `object` | `string` | **66.10%** | Mã chẩn đoán bệnh đồng mắc / biến chứng thứ 9 | Khuyết 3,238 dòng (33.90%), một số mã có đuôi `.0` | `41071.0`, `34831.0` |
+| **24** | `ClmDiagnosisCode_10` | Chẩn đoán ICD | `object` | `string` | **9.29%** | Mã chẩn đoán bệnh đồng mắc / biến chứng thứ 10 | Tỷ lệ khuyết cao (90.71%) do bệnh nhân ít khi ghi nhận tới 10 mã chẩn đoán | `4280.0`, `  41401`, `nan` |
+| **25** | `ClmProcedureCode_1` | Thủ thuật ICD | `object` | `string` | **56.88%** | Mã thủ thuật can thiệp ngoại khoa chính (ICD-9-CM Volume 3) | **56.9%** hồ sơ có can thiệp ngoại khoa; 43.1% khuyết tự nhiên; dính đuôi `.0` | `4443.0`, `5551.0`, `8152` |
+| **26** | `ClmProcedureCode_2` | Thủ thuật ICD | `object` | `string` | **13.13%** | Mã thủ thuật can thiệp ngoại khoa thứ 2 | Chỉ phát sinh ở 13.1% ca bệnh có mổ phối hợp; còn lại khuyết | `5849.0`, `3320`, `nan` |
+| **27** | `ClmProcedureCode_3` | Thủ thuật ICD | `object` | `string` | **2.33%** | Mã thủ thuật can thiệp ngoại khoa thứ 3 | Chỉ phát sinh ở 2.3% ca đại phẫu phức tạp | `4131`, `2724`, `nan` |
+| **28** | `ClmProcedureCode_4` | Thủ thuật ICD | `object` | `string` | **0.30%** | Mã thủ thuật can thiệp ngoại khoa thứ 4 | Chỉ phát sinh ở 29 ca bệnh (0.3%) | `4414`, `nan` |
+| **29** | `ClmProcedureCode_5` | Thủ thuật ICD | `object` | `string` | **0.02%** | Mã thủ thuật can thiệp ngoại khoa thứ 5 | Chỉ phát sinh ở đúng 2 ca bệnh | `9972`, `nan` |
+| **30** | `ClmProcedureCode_6` | Thủ thuật ICD | `object` | `string` | **0.00%** | Mã thủ thuật can thiệp ngoại khoa thứ 6 | **100% khuyết** trong tệp dữ liệu này (không có ca nào ghi nhận đến 6 thủ thuật) | `nan` |
+
+: Bảng Từ điển dữ liệu 30 biến số hồ sơ bồi thường nội trú Medicare SynPUF. {#tbl-inpatient-data-dictionary}
+
+---
+
+## 4.2. Phân tích Chi tiết 5 Dạng Bất thường Dữ liệu Thô (Dirty Patterns)
+
+### 1. Hiện tượng Chèn Lẫn Đơn vị Tiền tệ và Đơn vị Đo lường vào Trường Số liệu
+Trong hai trường tài chính quan trọng là `InscClaimAmtReimbursed` và `DeductibleAmtPaid`, các chuỗi số bị gắn kèm các đơn vị lạ:
+- Ký hiệu tiền tệ: `'USD'`, `'VND'`, `'đ'` (ví dụ: `'4000 USD'`, `'26000 VND'`, `'4000 đ'`).
+- Đơn vị tỷ lệ phần trăm: `'%'` (ví dụ: `'10000 %'`, `'5000 %'`, `'1068 %'`).
+- Đơn vị trọng lượng: `'kg'` (ví dụ: `'5000 kg'`, `'1068 kg'`).
+- Chuỗi khuyết dính đơn vị: `'nan VND'`.
+
+*Giải pháp xử lý:* Sử dụng biểu thức chính quy Regex để loại bỏ triệt để toàn bộ các ký tự không phải chữ số hoặc dấu thập phân:
+```python
+df['InscClaimAmtReimbursed'] = (
+    df['InscClaimAmtReimbursed']
+    .astype(str)
+    .str.replace(r'[USD|VND|đ|%|kg|\s]', '', regex=True)
+)
+```
+
+### 2. Hiện tượng Giá trị Âm Phi lý trong Các Biến Tài chính
+Kiểm toán dữ liệu phát hiện:
+- `InscClaimAmtReimbursed` có **653 giá trị âm** (ví dụ: `-1`, `-7000.0`, `-14000.0`).
+- `DeductibleAmtPaid` có **174 giá trị âm** (ví dụ: `-1`, `-1068.0`).
+
+Trong nghiệp vụ bảo hiểm y tế, số tiền bồi thường phải là một đại lượng không âm ($Y \ge 0$). Giá trị âm phát sinh do các giao dịch hủy thanh toán hoặc lỗi tiêm dữ liệu. Do đó, cần quy các giá trị này về giá trị khuyết (`np.nan`) hoặc lọc bỏ trong tập huấn luyện.
+
+### 3. Hiện tượng Cắt cụt Ngày tháng (Truncated Dates)
+Bốn cột ngày tháng (`ClaimStartDt`, `ClaimEndDt`, `AdmissionDt`, `DischargeDt`) chứa hàng nghìn dòng dữ liệu bị mất phần ngày (chỉ còn lại năm và tháng kèm dấu gạch nối, ví dụ: `'  2009-05-'`, `'  2009-08-'`).
+- Cần làm sạch khoảng trắng bằng `.str.strip()`.
+- Với các chuỗi dạng `YYYY-MM-`, có thể điền ngày mặc định đầu tháng (`01`) hoặc nội suy logic dựa trên cặp ngày đối ứng (`ClaimStartDt` $\leftrightarrow$ `AdmissionDt`; `ClaimEndDt` $\leftrightarrow$ `DischargeDt`).
+
+### 4. Hiện tượng Ký tự Placeholder Thay thế Dữ liệu Khuyết
+Dữ liệu khuyết trong tệp thô không chỉ là ô trống (`NaN`) mà được đại diện bởi các ký tự chuỗi tự do:
+- Ký tự chấm hỏi: `'?'` (xuất hiện ở hầu hết các cột: `ClaimID` có 228 dòng, `Provider` có 151 dòng, `AttendingPhysician` có 383 dòng, `InscClaimAmtReimbursed` có 297 dòng).
+- Ký tự văn bản: `'chưa rõ'`, `'unknown'`, `'nan'`, `'NAN'`, `'-'`.
+
+Cần lập hàm chuẩn hóa để đưa tất cả các ký tự đại diện này về giá trị khuyết chuẩn `np.nan` trước khi thực hiện các phép toán thống kê.
+
+### 5. Hiện tượng Không đồng nhất Chữ hoa / Chữ thường và Khoảng trắng
+Các mã định danh (`BeneID`, `ClaimID`, `Provider`, `Physician IDs`) bị phân mảnh chữ hoa chữ thường (ví dụ: `bene11014` và `BENE11014` bị máy tính hiểu là hai bệnh nhân khác nhau). Cần chuẩn hóa toàn bộ về chữ in hoa và loại bỏ khoảng trắng đầu cuối bằng cú pháp:
+```python
+df['BeneID'] = df['BeneID'].astype(str).str.strip().str.upper()
+```
+
+---
+
+# 5. ĐÁNH GIÁ RỦI RO PHƯƠNG PHÁP LUẬN VÀ KHUYẾN NGHỊ TIỀN XỬ LÝ
+
+Từ kết quả phân tích cấu trúc và quy trình phát sinh dữ liệu, nhóm nghiên cứu rút ra 4 khuyến nghị phương pháp luận cốt lõi:
+
+## 5.1. Kiểm soát Rò rỉ Dữ liệu Cấp Bệnh nhân (Data Leakage via BeneID)
+Trong 9,551 hồ sơ bồi thường nội trú, có 7,764 mã người thụ hưởng (`BeneID`) duy nhất, nghĩa là có nhiều bệnh nhân nhập viện từ 2 đến nhiều lần trong kỳ dữ liệu. Nếu phân chia tập Train (80%) và Test (20%) ngẫu nhiên theo từng dòng giao dịch (`train_test_split`), hồ sơ của cùng một bệnh nhân sẽ xuất hiện ở cả hai tập, dẫn đến hiện tượng mô hình học thuộc đặc điểm riêng lẻ thay vì học quy luật tổng quát.
+> **Khuyến nghị:** Bắt buộc áp dụng chiến lược phân chia theo nhóm người bệnh bằng `GroupShuffleSplit(..., groups=df['BeneID'])` trong Scikit-learn.
+
+## 5.2. Nhận diện Rủi ro Rò rỉ Thông tin từ Biến Số Sau Thẩm định
+- `DeductibleAmtPaid` (mức khấu trừ người bệnh tự chi trả) và `DiagnosisGroupCode` (mã DRG trọn gói) chỉ được xác lập đầy đủ sau khi bệnh nhân xuất viện và được giám định chi phí.
+- Nếu đưa trực tiếp mã DRG vào mô hình dự báo sớm trước khi thẩm định, mô hình có thể bị phụ thuộc cơ học vào mã thanh toán thay vì nhận diện rủi ro lâm sàng. Do đó, cần thảo luận sâu về việc thử nghiệm mô hình khi có và không có các biến số này.
+
+## 5.3. Xử lý Phân phối Chi phí Lệch Phải Cực Đại và Hồ sơ Bồi hoàn Bằng 0
+Sau khi làm sạch chuỗi, biến mục tiêu `InscClaimAmtReimbursed` có:
+- **Độ lệch Skewness:** $\approx +26.0$ (lệch phải cực đại).
+- **Hệ số nhọn Kurtosis:** $\approx 816.9$ (đuôi rất dày, tồn tại các khoản bồi thường ngoại lai lên tới 47,000,000 USD).
+- **Tỷ lệ hồ sơ bằng 0:** Có 194 hồ sơ (khoảng 2.6%) có mức bồi thường bằng 0 (do chưa vượt mức khấu trừ tự chi trả `DeductibleAmtPaid` hoặc hồ sơ bị từ chối/chưa duyệt chi).
+> **Khuyến nghị:** Áp dụng biến đổi logarit tự nhiên $\ln(y + 1) = \text{np.log1p}(y)$ kết hợp hiệu chỉnh Smearing của Duan cho mô hình OLS, hoặc ứng dụng trực tiếp mô hình Tweedie Compound Poisson-Gamma GLM và các mô hình Cây quyết định (Random Forest, XGBoost).
+
+## 5.4. Kỹ thuật Tạo lập Đặc trưng Lâm sàng Đề xuất (Feature Engineering)
+Dựa trên các trường dữ liệu có sẵn của tệp nội trú, nhóm đề xuất trích xuất các đặc trưng mới cho Chương 4:
+1. `LengthOfStay`: Số ngày nằm viện nội trú = `DischargeDt - AdmissionDt`.
+2. `Diagnosis_Count`: Số lượng mã chẩn đoán ghi nhận trên hồ sơ (từ 1 đến 10 mã).
+3. `Procedure_Count`: Số lượng thủ thuật ngoại khoa can thiệp (từ 0 đến 6 mã).
+4. `Has_OperatingPhysician`: Cờ nhị phân chỉ thị ca bệnh có phẫu thuật viên chính (1 nếu có, 0 nếu không).
+5. `Claim_Month`: Tháng phát sinh đợt nằm viện (trích xuất từ `ClaimStartDt`).
+6. `Primary_ICD_Group`: Nhóm chẩn đoán chính dựa trên 3 ký tự đầu của mã ICD-9-CM.
+
+---
+
+# 6. MÃ NGUỒN PYTHON MINH HỌA KIỂM TOÁN TỆP THÔ
+
+Khối lệnh Python dưới đây minh họa toàn bộ quy trình đọc nạp, kiểm tra số dòng, số cột và kiểm toán tỷ lệ khuyết thiếu của 30 biến số trên tệp thô thực tế:
+
+```{python}
+import pandas as pd
+import numpy as np
+
+# Đường dẫn tệp dữ liệu thô
+raw_file = '06_2521001108_PRJ04_Phan Thị Quế Trân_raw_dirty.csv.csv'
+
+# Đọc nạp tệp thô ở định dạng chuỗi ký tự
+df_raw = pd.read_csv(raw_file, dtype=str, low_memory=False)
+
+print(f"Tổng số dòng quan sát : {len(df_raw):,}")
+print(f"Tổng số cột biến số   : {len(df_raw.columns)}")
+
+# Hàm kiểm toán chất lượng biến số
+def audit_variable(series):
+    total = len(series)
+    null_cnt = series.isna().sum()
+    qmark_cnt = (series == '?').sum()
+    text_null = series.str.lower().str.strip().isin(['nan', 'null', 'none', '', 'unknown', 'chưa rõ']).sum()
+    dirty_total = null_cnt + qmark_cnt + text_null
+    clean_total = total - dirty_total
+    clean_pct = (clean_total / total) * 100
+    return clean_total, dirty_total, clean_pct
+
+audit_results = []
+for col in df_raw.columns:
+    clean, dirty, pct = audit_variable(df_raw[col])
+    audit_results.append({
+        'Biến số': col,
+        'Số dòng sạch': clean,
+        'Số dòng lỗi/khuyết': dirty,
+        'Tỷ lệ sạch (%)': round(pct, 2)
+    })
+
+df_audit = pd.DataFrame(audit_results)
+df_audit.head(10)
+```
+
+---
+
+# TỔNG KẾT BÁO CÁO {.unnumbered}
+
+Báo cáo phân tích chuyên đề cho tệp dữ liệu bồi thường điều trị nội trú thô (`06_2521001108_PRJ04_Phan Thị Quế Trân_raw_dirty.csv.csv`) đã làm sáng tỏ:
+1. **Nguồn gốc dữ liệu:** Xuất phát từ hệ thống Medicare Part A của CMS Hoa Kỳ, bộ dữ liệu tổng hợp DE-SynPUF 2008–2009 được tiêm các lỗi thực tế để phục vụ huấn luyện kỹ năng tiền xử lý dữ liệu.
+2. **Quy trình phát sinh:** Phản ánh chu trình 5 giai đoạn chặt chẽ từ Nhập viện $\rightarrow$ Điều trị/Phẫu thuật $\rightarrow$ Xuất viện & Gán mã DRG $\rightarrow$ Lập hóa đơn EDI 837I $\rightarrow$ Thẩm định & Chi trả bồi hoàn.
+3. **Đơn vị quan sát:** Mỗi dòng đại diện cho một hồ sơ yêu cầu bồi hoàn viện phí của một đợt nằm viện nội trú (Stay-level Claim), gắn liền với khóa chính `ClaimID` (hiện bị lỗi/khuyết ~21.03%).
+4. **Từ điển 30 biến số:** Đã phân loại thành 6 nhóm nghiệp vụ, lượng hóa tỷ lệ sạch, nhận diện 5 dạng lỗi bẩn điển hình và đề xuất các giải pháp làm sạch bằng Regex, Pipeline và kiểm soát rò rỉ dữ liệu.
+
+Toàn bộ nội dung này là cơ sở trực tiếp cho **Chương 3.1** trong đồ án tiểu luận tổng thể của Đề tài PRJ-04.
