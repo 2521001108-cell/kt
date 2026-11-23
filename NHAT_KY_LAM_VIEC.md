@@ -6,8 +6,8 @@
 * **Tên đề tài tiểu luận:** Xây dựng mô hình dự báo chi phí bồi thường bảo hiểm
 * **Giảng viên hướng dẫn:** ThS. Trần Mạnh Tường
 * **Nhóm sinh viên thực hiện (Nhóm 6):**
-  1. **Phan Thị Quế Trân** (MSSV: 2521001108) — *Trưởng nhóm*
-  2. **Nguyễn Ngọc Phương Thảo** (MSSV: 2521001099) — *Thành viên*
+  1. **Phan Thị Quế Trân** (MSSV: 2521001108) 
+  2. **Nguyễn Ngọc Phương Thảo** (MSSV: 2521001099) 
 * **Môi trường & Công cụ phát triển:** Python 3.11+, Quarto CLI, Microsoft Edge Headless, Antigravity IDE
 * **Quy chuẩn lưu trữ nhật ký:** Thứ tự thời gian đảo ngược (Reverse Chronological Order) — Phiên làm việc mới nhất luôn nằm ở trên cùng ngay sau phần Header.
 
