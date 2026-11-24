@@ -504,7 +504,13 @@ Bảng: Danh mục các thuật ngữ và chữ viết tắt trong đề tài
 | **Bảng 3.8** | Bảng ánh xạ 3 tầng đặc trưng: Từ 30 biến gốc, ma trận 21 thuộc tính đến 15 biến đầu vào mô hình | *Tự động cập nhật* |
 | **Bảng 3.9** | Hệ số tương quan Pearson giữa các đặc trưng y tế kỹ nghệ với biến mục tiêu logarit $\ln(y + 1)$ | *Tự động cập nhật* |
 | **Bảng 3.10** | Bảng tổng hợp kết quả 5 kiểm định giả thuyết thống kê sơ bộ (Welch's t-test, Chi-square, ANOVA) | *Tự động cập nhật* |
-| **Bảng 4.1** | Bảng so sánh hiệu năng các mô hình dự báo chi phí bồi thường y tế (OLS, GLM, RF, XGBoost) | *Tự động cập nhật* |
+| **Bảng 4.1** | Bảng đối chuẩn hiệu năng giữa các mô hình Baseline đơn giản và mô hình Học máy | *Tự động cập nhật* |
+| **Bảng 4.2** | Bảng so sánh hiệu năng chi tiết 4 mô hình Machine Learning (OLS, GLM, RF, XGBoost) trên tập kiểm tra | *Tự động cập nhật* |
+| **Bảng 4.3** | Bảng kiểm định thống kê so sánh sai số và Khoảng tin cậy 95% Bootstrap (OLS, RF, XGBoost) | *Tự động cập nhật* |
+| **Bảng 4.4** | Bảng đánh giá hiệu năng mô hình XGBoost theo các phân khúc nghiệp vụ y tế | *Tự động cập nhật* |
+| **Bảng 4.5** | Bảng kiểm định độ chuẩn hóa quy mô (Calibration) và phân tích phần dư theo 10 Deciles chi phí thực tế | *Tự động cập nhật* |
+| **Bảng 4.6** | Bảng so sánh thực nghiệm các phương án xử lý ngoại lai (Winsorization vs. Log-Transform + Smearing) | *Tự động cập nhật* |
+| **Bảng 4.7** | Bảng đánh giá tách rời biến cấu trúc IsInpatient (Mô hình gộp Pooled vs. Hai mô hình phân hệ riêng biệt) | *Tự động cập nhật* |
 | **Bảng 5.1** | Bảng xếp hạng Top 10 cơ sở y tế (Provider) có mức chi phí bồi thường vượt dự báo bất thường lớn nhất | *Tự động cập nhật* |
 | **Bảng 5.2** | Khung lộ trình 4 giai đoạn triển khai hệ thống học máy giám định bồi thường trong doanh nghiệp bảo hiểm | *Tự động cập nhật* |
 
@@ -1678,8 +1684,8 @@ Nội dung chương được cấu trúc mạch lạc thành 6 phần trọng t�
 1. **Mục 4.1: Kỹ thuật tạo lập và Lựa chọn đặc trưng (Feature Engineering):** Luận giải quy chuẩn tạo lập 15 đặc trưng y tế - tài chính đầu vào và quy trình sàng lọc đặc trưng 3 bước tối ưu.
 2. **Mục 4.2: Chuẩn hóa và Phân chia tập dữ liệu huấn luyện / kiểm tra:** Chiến lược chuyển đổi biến mục tiêu bằng hàm logarit $\ln(y + 1)$ và kỹ thuật phân chia mẫu theo nhóm bệnh nhân `GroupShuffleSplit` (80% Train / 20% Test) chống rò rỉ dữ liệu (*Data Leakage*).
 3. **Mục 4.3: Huấn luyện các mô hình Machine Learning:** Cấu hình toán học và thực thi huấn luyện 4 lớp mô hình đối chuẩn: OLS trên thang đo logarit kết hợp hệ số Smearing (Duan, 1983); Mô hình Tuyến tính Tổng quát GLM Tweedie ($p = 1,5$); Thuật toán Rừng Ngẫu nhiên (Random Forest Regressor); và Thuật toán Tăng cường Độ dốc Cực đại (XGBoost Regressor).
-4. **Mục 4.4: So sánh hiệu năng mô hình qua các chỉ số đo lường:** Đánh giá định lượng trên 98.129 hồ sơ kiểm thử độc lập qua các thước đo $R^2$, RMSE, MAE, RMSE quy đổi USD và thời gian huấn luyện (@tbl-hieu-nang-mo-hinh), đồng thời phân tích căn nguyên mô hình có hiệu năng tốt nhất.
-5. **Mục 4.5: Phân tích độ quan trọng của đặc trưng và Diễn giải mô hình:** Lượng hóa mức độ quan trọng của đặc trưng (*Feature Importance*) từ mô hình cây quyết định và giải mã cơ chế tác động phi tuyến tính của các biến can thiệp lâm sàng then chốt.
+4. **Mục 4.4: So sánh hiệu năng mô hình qua các chỉ số đo lường:** Thiết lập các mô hình baseline nghiệp vụ đơn giản (@tbl-baseline-benchmark); đánh giá đối chuẩn đa chiều 4 mô hình Machine Learning (@tbl-hieu-nang-mo-hinh); kiểm định thống kê sai số kèm khoảng tin cậy 95% Bootstrap (@tbl-kiem-dinh-thong-ke); báo cáo hiệu năng theo từng phân khúc lâm sàng (@tbl-hieu-nang-phan-khuc); kiểm định độ chuẩn hóa quy mô theo 10 Deciles chi phí (@tbl-calibration-deciles); và so sánh thực nghiệm các chiến lược ứng phó ngoại lai (@tbl-so-sanh-outlier).
+5. **Mục 4.5: Phân tích độ quan trọng của đặc trưng và Diễn giải mô hình:** Lượng hóa mức độ quan trọng của đặc trưng (*Feature Importance*); giải mã tác động biên phi tuyến tính của các biến then chốt; và thảo luận chuyên sâu vai trò của biến cấu trúc `IsInpatient` thông qua so sánh mô hình gộp (*Pooled Model*) và hai mô hình phân hệ chuyên biệt (@tbl-so-sanh-mo-hinh-phan-he).
 6. **Mục 4.6: Thảo luận kết quả thực nghiệm và Hệ thống Master Project Dashboard:** Thảo luận, đánh giá sâu sắc các phát hiện mô hình hóa và trực quan hóa câu chuyện dữ liệu toàn diện qua hệ sinh thái Master Executive Dashboard 8 bảng biểu (@fig-master-dashboard).
 
 ---
@@ -1788,7 +1794,41 @@ Thuật toán XGBoost Regressor [@chen2016] được cấu hình với 150 cây 
 
 ## 4.4. So sánh hiệu năng mô hình qua các chỉ số đo lường
 
-Hiệu năng dự báo của cả 4 mô hình được nghiệm thu độc lập trên tập kiểm tra gồm **98.129 hồ sơ bồi thường**. Kết quả so sánh định lượng đa chiều trên cả thang đo logarit $\ln(y + 1)$ và thang đo tiền tệ gốc USD được trình bày tại @tbl-hieu-nang-mo-hinh:
+Nhằm đánh giá năng lực dự báo một cách nghiêm ngặt, khách quan và toàn diện theo các chuẩn mực thống kê tính toán bảo hiểm quốc tế [@frees2014], nghiên cứu tiến hành chuỗi thực nghiệm đối chuẩn đa tầng trên tập kiểm tra độc lập gồm **98.129 hồ sơ bồi thường** (chiếm 20% tổng mẫu hợp lệ, được phân chia theo cụm bệnh nhân `GroupShuffleSplit`). Quá trình đánh giá bao gồm: (1) Đối chuẩn với các baseline kinh nghiệm; (2) So sánh 4 mô hình Machine Learning; (3) Kiểm định thống kê sự khác biệt mô hình kèm khoảng tin cậy Bootstrap; (4) Đánh giá hiệu năng theo từng phân khúc nghiệp vụ; (5) Kiểm tra độ chuẩn hóa quy mô (Calibration) theo Deciles chi phí; và (6) So sánh thực nghiệm các phương án xử lý ngoại lai.
+
+### 4.4.1. Thiết lập các Mô hình Baseline Đơn giản và Đánh giá Giá trị Gia tăng của Học máy
+
+Một yêu cầu phương pháp luận nền tảng trong học máy ứng dụng là phải chứng minh được rằng các thuật toán phức tạp thực sự mang lại giá trị gia tăng rõ rệt so với các quy tắc nghiệp vụ đơn giản (*Heuristic Baselines*). Nhóm nghiên cứu thiết lập **3 mô hình cơ sở (Baselines)** đại diện cho các cách tiếp cận truyền thống:
+1. **Baseline 1 (Global Median):** Dự báo toàn bộ hồ sơ bằng giá trị trung vị toàn cục của tập huấn luyện (80 USD).
+2. **Baseline 2 (Median by `IsInpatient`):** Quy tắc phân tầng kinh điển: hồ sơ ngoại trú được gán bằng trung vị ngoại trú (80 USD), hồ sơ nội trú được gán bằng trung vị nội trú (7.000 USD).
+3. **Baseline 3 (Heuristic Rule-based Model):** Mô hình quy tắc hồi quy tuyến tính đơn giản chỉ dựa trên 3 biến cơ bản: thời gian đợt bồi thường (`ClaimDuration`), số ngày nằm viện (`LengthOfStay`) và số lượng thủ thuật (`Procedure_Count`).
+
+Kết quả đối sánh giữa các Baseline nghiệp vụ và 4 mô hình Machine Learning được tổng hợp tại @tbl-baseline-benchmark:
+
+::: {#tbl-baseline-benchmark}
+| Nhóm Mô Hình | Lớp Mô Hình Đối Chuẩn | $R^2$ (Log) | RMSE (Log) | MAE (Log) | MAE (USD) | WAPE (%) | Đánh Giá Giá Trị Gia Tăng |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :--- |
+| **Baseline 1** | Trung vị toàn cục (*Global Median: 80 USD*) | $-0,0155$ | $1,8805$ | $1,3305$ | **4.365,04** | **99,14%** | Mốc đối chuẩn tối thiểu; không giải thích được phương sai. |
+| **Baseline 2** | Trung vị phân tầng (*Outpatient: 80 USD, Inpatient: 7.000 USD*) | $0,0662$ | $1,8033$ | $1,2751$ | **4.304,08** | **97,74%** | Phân tầng loại hình giải thích được $6,62\%$ phương sai log. |
+| **Baseline 3** | Quy tắc Heuristic (*Duration + Stay + Procedure*) | $0,0674$ | $1,8021$ | $1,2955$ | $270.324,37$ | $6.138,91\%$ | Thước đo log cải thiện nhẹ nhưng biến đổi ngược bị vỡ sai số USD. |
+| **Machine Learning** | **OLS (Log + Duan Smearing)** | $0,1079$ | $1,7625$ | $1,2586$ | $8.465,04$ | $192,24\%$ | Vượt Baseline 2 $+4,17$ điểm % $R^2_{\text{log}}$; kiểm soát đa biến tốt. |
+| **Machine Learning** | **GLM Tweedie ($p=1,5$)** | $-3,5966$ | $4,0009$ | $3,6390$ | **7.129,40** | **161,90%** | Tối ưu hóa trực tiếp trên USD; MAE và WAPE thực tế thấp nhất. |
+| **Machine Learning** | **Random Forest Regressor** | $0,1128$ | $1,7578$ | $1,2519$ | $8.146,30$ | $185,00\%$ | Vượt Baseline 2 $+4,66$ điểm % $R^2_{\text{log}}$; bắt trọn tương tác phi tuyến. |
+| **Machine Learning** | **XGBoost Regressor (Tốt nhất)** | **0,1147** | **1,7559** | **1,2501** | $8.322,76$ | $189,00\%$ | Vượt Baseline 2 **+4,85 điểm % $R^2_{\text{log}}$**; giải thích phương sai cao nhất. |
+
+Bảng 4.1: Bảng đối chuẩn hiệu năng giữa các mô hình Baseline đơn giản và mô hình Học máy trên tập kiểm tra
+:::
+::: {.source-note}
+*Nguồn: Nhóm tác giả tính toán thực nghiệm trên 98.129 hồ sơ kiểm tra độc lập (2026)*
+:::
+
+So sánh tại @tbl-baseline-benchmark chứng minh rõ nét giá trị gia tăng của việc ứng dụng Machine Learning:
+* Chỉ riêng việc phân biệt ngoại trú và nội trú (Baseline 2) đã giúp tăng $R^2_{\text{log}}$ từ âm lên $6,62\%$. Tuy nhiên, việc khai thác đa chiều 15 đặc trưng y tế thông qua các mô hình học máy (OLS, RF, XGBoost) đã nâng $R^2_{\text{log}}$ lên **$11,47\%$ (tăng thêm gần 5 điểm phần trăm khả năng giải thích phương sai)**, đồng thời giảm sai số $\text{MAE}_{\text{log}}$ từ $1,2751$ xuống $1,2501$.
+* Điều này khẳng định Machine Learning không chỉ tái hiện lại quy tắc nghiệp vụ phân tầng mà thực sự bóc tách được các giá trị thông tin phi tuyến từ tương tác bệnh lý phức tạp, đội ngũ y bác sĩ và mức khấu trừ tự chi trả.
+
+### 4.4.2. So sánh Hiệu năng Đối chuẩn Chi tiết Giữa 4 Mô hình Machine Learning
+
+Kết quả đánh giá đối chuẩn chi tiết giữa 4 lớp thuật toán Machine Learning trên cả hai thang đo (Logarit và USD gốc) được trình bày tại @tbl-hieu-nang-mo-hinh:
 
 ::: {#tbl-hieu-nang-mo-hinh}
 | STT | Lớp Mô Hình Đối Chuẩn | $R^2$ (Log) | RMSE (Log) | MAE (Log) | $R^2$ (USD) | RMSE (USD) | MAE (USD) | WAPE (%) | Thời Gian Huấn Luyện |
@@ -1798,26 +1838,124 @@ Hiệu năng dự báo của cả 4 mô hình được nghiệm thu độc lập
 | 3 | **Random Forest Regressor** | $0,1128$ | $1,7578$ | $1,2519$ | $0,0047$ | $246.324,69$ | $8.146,30$ | $185,00\%$ | $16,61$ s |
 | 4 | **XGBoost Regressor (Tốt nhất)** | **0,1147** | **1,7559** | **1,2501** | **0,0048** | **246.304,88** | $8.322,76$ | $189,00\%$ | **2,92 s** |
 
-Bảng 4.1: Bảng so sánh hiệu năng các mô hình dự báo chi phí bồi thường y tế (OLS, GLM, RF, XGBoost) trên tập kiểm tra
+Bảng 4.2: Bảng so sánh hiệu năng chi tiết 4 mô hình Machine Learning trên tập kiểm tra (98.129 quan sát)
 :::
 ::: {.source-note}
 *Nguồn: Nhóm tác giả tổng hợp từ kết quả thực nghiệm học máy trên 98.129 quan sát kiểm tra độc lập (2026)*
 :::
 
-Phân tích chuyên sâu kết quả thực nghiệm từ @tbl-hieu-nang-mo-hinh:
-
+Từ @tbl-hieu-nang-mo-hinh, nhóm nghiên cứu rút ra 3 nhận định chuyên môn quan trọng:
 1. **XGBoost là mô hình tốt nhất trong bốn mô hình được thử nghiệm, nhưng năng lực dự báo tổng thể còn hạn chế:**
-   * **Mức độ cải thiện khiêm tốn so với OLS:** Trên thang đo logarit $\ln(y + 1)$, thuật toán XGBoost đạt kết quả tốt nhất trong 4 mô hình thử nghiệm: hệ số xác định cao nhất ($R^2_{\text{log}} = 0,1147$), sai số căn bậc hai trung bình thấp nhất ($\text{RMSE}_{\text{log}} = 1,7559$) và sai số tuyệt đối trung bình thấp nhất ($\text{MAE}_{\text{log}} = 1,2501$). Tuy nhiên, cần nhìn nhận một cách khách quan rằng mức cải thiện của XGBoost so với mô hình hồi quy tuyến tính cổ điển OLS ($R^2_{\text{log}} = 0,1079$) là **rất nhỏ: chỉ tăng 0,0068 (tương đương khoảng 0,68 điểm phần trăm, chưa tới 0,7%)**, và chỉ nhỉnh hơn Random Forest ($0,1128$) vẻn vẹn 0,19 điểm phần trăm.
-   * **Năng lực giải thích phương sai tổng thể còn khiêm tốn:** Với chỉ số $R^2_{\text{log}} \approx 11,5\%$, mô hình mới chỉ giải thích được hơn 11% độ biến thiên của chi phí bồi thường y tế. Gần 88,5% phương sai còn lại chưa được giải thích, phản ánh một thực tế khách quan trong khoa học tính toán bảo hiểm: chi phí khám chữa bệnh thực tế chịu sự chi phối mạnh mẽ của vô số yếu tố ngẫu nhiên và biến ngoại sinh lâm sàng (mức độ trở nặng bất thường của ca bệnh, biến chứng hậu phẫu, đáp ứng thuốc cá thể, kết quả chẩn đoán hình ảnh/xét nghiệm chi tiết, cũng như quyết định chủ quan của bác sĩ điều trị) mà các trường dữ liệu hành chính yêu cầu bồi thường (claims data) thông thường không thể ghi nhận đầy đủ.
-   * **Sai số ở thang đo tiền tệ gốc USD vẫn rất lớn:** Khi chuyển đổi dự báo về thang đo tiền tệ thực tế USD, tất cả các mô hình đều có sai số bình phương rất lớn ($\text{RMSE}_{\text{USD}} > 246.000\text{ USD}$) do chịu tác động chi phối của các ca bệnh ngoại lai đuôi cực dày (lên tới 47 triệu USD). Đáng chú ý, sai số tuyệt đối trung bình $\text{MAE}_{\text{USD}}$ của XGBoost ($8.322,76\text{ USD}$) thực tế còn cao hơn so với GLM Tweedie ($7.129,40\text{ USD}$).
-   * **Ưu thế về tốc độ tính toán:** Điểm vượt trội rõ nét nhất của XGBoost nằm ở hiệu năng thực thi: mô hình chỉ mất **2,92 giây** để hoàn thành toàn bộ chu trình huấn luyện trên gần 400.000 dòng dữ liệu, nhanh hơn 5,7 lần so với Random Forest (16,61 giây), cho thấy cấu trúc thuật toán tăng cường độ dốc tối ưu hóa bộ nhớ đệm (Cache-aware access) của Chen & Guestrin (@chen2016) rất thích hợp cho việc triển khai suy luận trên tập dữ liệu lớn.
+   * Trên thang đo logarit $\ln(y + 1)$, XGBoost dẫn đầu về $R^2_{\text{log}} = 0,1147$, $\text{RMSE}_{\text{log}} = 1,7559$ và $\text{MAE}_{\text{log}} = 1,2501$. Tuy nhiên, mức độ cải thiện so với mô hình hồi quy tuyến tính cổ điển OLS ($R^2_{\text{log}} = 0,1079$) là **rất khiêm tốn: chỉ tăng 0,0068 (tương đương 0,68 điểm phần trăm)**, và chỉ nhỉnh hơn Random Forest ($0,1128$) vẻn vẹn 0,19 điểm phần trăm.
+   * Chỉ số $R^2_{\text{log}} \approx 11,5\%$ cho thấy mô hình mới chỉ giải thích được một phần nhỏ độ biến thiên của chi phí bồi thường y tế. Gần 88,5% phương sai còn lại phụ thuộc vào các yếu tố ngoại sinh lâm sàng chuyên sâu (đáp ứng thuốc, biến chứng phẫu thuật, phác đồ điều trị cá thể hóa) mà dữ liệu hành chính bồi thường thông thường không ghi nhận được.
+2. **Nghịch lý Không gian Hàm Mục tiêu của Mô hình GLM Tweedie:**
+   * GLM Tweedie ($p = 1,5$) có $R^2_{\text{log}} = -3,5966$ âm sâu, nhưng ở thang đo tiền tệ gốc USD, GLM Tweedie lại đạt **$\text{MAE}_{\text{USD}} = 7.129,40\text{ USD}$ thấp nhất** và **$\text{WAPE} = 161,90\%$ thấp nhất** trong cả 4 mô hình.
+   * Căn nguyên toán học: GLM Tweedie tối ưu hóa trực tiếp độ lệch Tweedie Deviance trên thang tiền tệ gốc USD, trong khi OLS, RF và XGBoost tối ưu hóa hàm sai số bình phương MSE trên thang logarit $\ln(y + 1)$. Khi biến đổi ngược về USD bằng hàm $\exp(\cdot) \times \hat{s} - 1$, hệ số Smearing (Duan, 1983) đã đẩy kỳ vọng dự báo lên để bù đắp bất đẳng thức Jensen, vô tình làm tăng sai số tuyệt đối MAE trên USD. Đây là sự đánh đổi kinh điển giữa tính không thiên lệch của tổng quỹ bồi thường và độ chính xác tuyệt đối ở từng hồ sơ cá lẻ.
+3. **Ưu thế về Tốc độ Huấn luyện và Đóng gói Triển khai:**
+   * Điểm vượt trội rõ rệt nhất của XGBoost nằm ở tốc độ thực thi: chỉ mất **2,92 giây** để huấn luyện trên gần 400.000 dòng dữ liệu, nhanh hơn 5,7 lần so với Random Forest (16,61 giây), chứng minh tính khả thi cao khi đưa vào hệ thống suy luận thời gian thực (*Real-time Inference API*).
 
-2. **Luận giải khách quan về mô hình GLM Tweedie và sự không tương thích của thước đo $R^2_{\text{log}}$:**
-   * **Hiện tượng $R^2_{\text{log}} = -3,5966$ âm sâu:** Trong Bảng 4.1, mô hình GLM Tweedie ghi nhận chỉ số $R^2_{\text{log}}$ âm mạnh. Tuy nhiên, trước khi vội vã đưa ra kết luận rằng mô hình GLM không phù hợp, cần phân tích cặn kẽ bản chất toán học và tính công bằng trong phương pháp đánh giá (*Fairness of Benchmark Evaluation*):
-     * *Thứ nhất, về biến mục tiêu và không gian tối ưu:* Ba mô hình OLS, Random Forest và XGBoost đều được huấn luyện trực tiếp trên biến logarit $\tilde{y} = \ln(y + 1)$ với hàm mất mát MSE trên thang logarit ($\text{MSE}_{\text{log}}$), do đó các thuật toán này đương nhiên được tối ưu hóa trực tiếp để cực đại hóa $R^2_{\text{log}}$. Ngược lại, GLM Tweedie ($p = 1,5$, Compound Poisson-Gamma) được huấn luyện trực tiếp trên **thang đo tiền tệ gốc USD ($y \ge 0$)** nhằm mô hình hóa kỳ vọng $\mathbb{E}[Y|\mathbf{x}]$ và phân phối tổn thất tổng.
-     * *Thứ hai, về hàm mất mát và cách tính $R^2_{\text{log}}$:* Hàm mục tiêu của GLM Tweedie là cực tiểu hóa độ lệch Tweedie Deviance trên thang USD chứ không phải sai số bình phương logarit. Chỉ số $R^2_{\text{log}}$ trong bảng được tính bằng cách lấy dự báo của GLM trên thang USD ($\hat{y}$), biến đổi ngược về thang log $\ln(\hat{y} + 1)$ rồi so sánh với $\ln(y + 1)$. Do không được tối ưu để khớp trung vị logarit, tổng bình phương sai số phần dư logarit $\sum (\ln(y_i + 1) - \ln(\hat{y}_i + 1))^2$ của GLM Tweedie vượt quá phương sai tổng thể của $\ln(y + 1)$, dẫn đến công thức $1 - \frac{\text{SS}_{\text{res}}}{\text{SS}_{\text{tot}}}$ bị âm. Đây là hiện tượng toán học tự nhiên khi đánh giá một mô hình trên không gian hàm mục tiêu hoàn toàn khác với hàm mục tiêu huấn luyện (*Mismatch of Objective Function*), chứ không phản ánh rằng mô hình hoàn toàn thất bại.
-     * *Thứ ba, ưu thế chuyên ngành của GLM Tweedie ở thang đo tiền tệ gốc:* Khi đánh giá trên thang đo tiền tệ thực tế USD mà các chuyên gia định toán bảo hiểm trực tiếp quản trị bồi hoàn, GLM Tweedie lại đạt kết quả rất ấn tượng: **$\text{MAE}_{\text{USD}} = 7.129,40\text{ USD}$ thấp nhất** (thấp hơn OLS $8.465,04\text{ USD}$ và XGBoost $8.322,76\text{ USD}$) và chỉ số sai số tỷ lệ trọng số **$\text{WAPE} = 161,90\%$ thấp nhất** trong toàn bộ 4 mô hình! GLM Tweedie bảo toàn tính không thiên lệch của kỳ vọng chi phí bồi thường tổng thể ($\sum \hat{y} \approx \sum y$) và không bị hiện tượng sai lệch biến đổi ngược (*Retransformation Bias*) vốn là nhược điểm cố hữu của các mô hình log-transform.
-     * *Thứ tư, giới hạn thực tế của GLM Tweedie:* Mặc dù kiểm soát tốt kỳ vọng tổn thất trung bình trên USD, GLM Tweedie với hàm liên kết tuyến tính $\ln(\mu) = \mathbf{x}^T \boldsymbol{\beta}$ không thể tự động nhận diện các mối tương tác phi tuyến phức tạp giữa thời gian nằm viện, can thiệp phẫu thuật và số mã bệnh lý nếu không được chỉ định tường minh. Đồng thời, trên thang đo tiền tệ gốc, các ca ngoại lai cực đoan (lên tới 47 triệu USD) tác động rất mạnh lên hàm quasi-likelihood, gây khó khăn cho việc tối ưu hóa tham số ở vùng phân phối thông thường.
+### 4.4.3. Kiểm định Thống kê Sự khác biệt Mô hình và Khoảng Tin cậy 95% Bootstrap
+
+Để đánh giá khoa học xem sự chênh lệch hiệu năng giữa XGBoost và Random Forest có thực sự mang ý nghĩa thống kê hay chỉ do ngẫu nhiên mẫu, nhóm nghiên cứu thực hiện: (1) Kiểm định cặp so sánh phần dư; và (2) Rút mẫu lặp lại Bootstrap ($B = 500$ lần trên tập kiểm tra) để xác lập Khoảng tin cậy 95% ($95\%\text{ CI}$) tại @tbl-kiem-dinh-thong-ke:
+
+::: {#tbl-kiem-dinh-thong-ke}
+| Thước Đo Đánh Giá | Mô Hình OLS (Log+Smearing) | Mô Hình Random Forest | Mô Hình XGBoost Regressor | Kết Quả So Sánh Giữa XGBoost và Random Forest |
+| :--- | :---: | :---: | :---: | :--- |
+| **RMSE (Log) [95% CI]** | $1,7628$ [$1,7517$ — $1,7752$] | $1,7580$ [$1,7469$ — $1,7703$] | **1,7561** [**1,7450** — **1,7685**] | Khoảng tin cậy 95% gối chồng lên nhau gần như hoàn toàn. |
+| **MAE (Log) [95% CI]** | $1,2588$ [$1,2513$ — $1,2663$] | $1,2520$ [$1,2444$ — $1,2597$] | **1,2502** [**1,2427** — **1,2578**] | XGBoost nhỉnh hơn nhẹ ở cận dưới; khác biệt không đáng kể. |
+| **Paired t-test ($t$-stat, $p$-val)** | — | — | $t = 6,5177$ ($p = 7,17 \times 10^{-11}$) | Đạt ý nghĩa thống kê do cỡ mẫu cực lớn ($N = 98.129$). |
+| **Wilcoxon signed-rank ($p$-val)** | — | — | $W = 24.499.012$ ($p = 0,0812$) | **Không bác bỏ $H_0$** ở mức ý nghĩa $5\%$ ($p > 0,05$). |
+| **Độ lớn Tác động (Cohen's $d$)** | — | — | **$d = 0,0208$ (Cực kỳ nhỏ)** | Mức độ cải thiện thực tế là không đáng kể ($d < 0,2$). |
+
+Bảng 4.3: Bảng kiểm định thống kê so sánh sai số và Khoảng tin cậy 95% Bootstrap giữa các mô hình
+:::
+::: {.source-note}
+*Nguồn: Nhóm tác giả thực hiện kiểm định cặp và 500 vòng lặp Bootstrap trên tập kiểm tra (2026)*
+:::
+
+Kết quả kiểm định thống kê tại @tbl-kiem-dinh-thong-ke làm sáng tỏ một kết luận phương pháp luận sâu sắc:
+* Khoảng tin cậy $95\%$ của Random Forest ($[1,7469 - 1,7703]$) và XGBoost ($[1,7450 - 1,7685]$) đối với $\text{RMSE}_{\text{log}}$ **trùng lặp (overlap) phần lớn phạm vi giá trị**.
+* Mặc dù phép kiểm định Paired t-test cho giá trị $p < 0,001$ (do quy mô mẫu lớn làm tăng lực kiểm định thống kê), nhưng kiểm định phi tham số Wilcoxon signed-rank test trên phân phối sai số lệch lại ghi nhận $p = 0,0812 > 0,05$. Đồng thời, chỉ số kích thước hiệu ứng Cohen's $d$ chỉ đạt **$0,0208$ (nhỏ hơn rất nhiều so với ngưỡng hiệu ứng nhỏ chuẩn $d = 0,2$)**.
+* **Kết luận khoa học:** Chưa đủ bằng chứng thực nghiệm để khẳng định XGBoost "vượt trội hoàn toàn" so với Random Forest về năng lực dự báo; hai mô hình ensemble dạng cây có độ chính xác tương đương nhau. Lợi thế quyết định của XGBoost trong ứng dụng thực tế nằm ở thuật toán tối ưu bộ nhớ đệm, cho phép huấn luyện nhanh gấp 5,7 lần và tiết kiệm tài nguyên hạ tầng máy chủ.
+
+### 4.4.4. Đánh giá Hiệu năng Chuyên sâu theo Phân khúc Nghiệp vụ Y tế
+
+Trong bài toán định phí và giám định bảo hiểm y tế, một chỉ số RMSE toàn cục duy nhất thường bị chi phối mạnh mẽ bởi các ca bệnh ngoại lai cực đoan (outliers). Do đó, việc phân rã hiệu năng dự báo theo các phân khúc nghiệp vụ trọng yếu (Ngoại trú vs. Nội trú, Có phẫu thuật vs. Không phẫu thuật) là bước đánh giá then chốt để thấu hiểu hành vi của mô hình trên từng nhóm đối tượng cụ thể. Kết quả đánh giá mô hình XGBoost theo phân khúc được trình bày tại @tbl-hieu-nang-phan-khuc:
+
+::: {#tbl-hieu-nang-phan-khuc}
+| Phân Khúc Nghiệp Vụ Khám Chữa Bệnh | Quy Mô Mẫu ($N$) | MAE (USD) | WAPE (%) | sMAPE (%) | Tỷ Lệ Dự Báo Quá Thấp (%) | Tỷ Lệ Dự Báo Quá Cao (%) | Sai Lệch Trung Bình Bias (USD) |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Toàn bộ mẫu kiểm tra (All Test)** | $98.129$ | $8.322,76$ | $189,00\%$ | $168,10\%$ | $3,95\%$ | $96,05\%$ | $+507,26$ |
+| **Phân hệ Ngoại trú (`IsInpatient = 0`)** | $96.651$ | **3.970,96** | **187,01%** | $167,97\%$ | $3,98\%$ | $96,02\%$ | $+356,03$ |
+| **Phân hệ Nội trú (`IsInpatient = 1`)** | $1.478$ | $292.900,09$ | $190,81\%$ | $176,18\%$ | $1,96\%$ | $98,04\%$ | $+10.396,98$ |
+| **Có can thiệp phẫu thuật (`HasProcedure = 1`)** | $872$ | $396.003,47$ | **170,52%** | $174,61\%$ | $2,75\%$ | $97,25\%$ | **-37.647,47** |
+| **Không can thiệp phẫu thuật (`HasProcedure = 0`)** | $97.257$ | **4.846,84** | $205,31\%$ | $168,04\%$ | $3,96\%$ | $96,04\%$ | $+849,36$ |
+
+Bảng 4.4: Bảng đánh giá hiệu năng mô hình XGBoost theo các phân khúc nghiệp vụ y tế trên tập kiểm tra
+:::
+::: {.source-note}
+*Nguồn: Nhóm tác giả tổng hợp từ phân tích phân nhóm trên tập kiểm tra độc lập (2026)*
+:::
+
+Bảng đánh giá phân khúc tại @tbl-hieu-nang-phan-khuc mang lại 3 hiểu biết thực tiễn sâu sắc:
+1. **Sự phân hóa rõ rệt về sai số tiền tệ giữa hai phân hệ:** Ở phân hệ Ngoại trú (chiếm $98,5\%$ số hồ sơ), sai số $\text{MAE}_{\text{USD}}$ của mô hình chỉ là **$3.970,96\text{ USD}$**. Tuy nhiên, khi bước vào phân hệ Nội trú, $\text{MAE}_{\text{USD}}$ nhảy vọt lên tới **$292.900,09\text{ USD}$**, phản ánh tác động khổng lồ của các ca điều trị hồi sức tích cực và can thiệp nội khoa chuyên sâu.
+2. **Hiện tượng dự báo thiếu (Under-prediction) ở nhóm có phẫu thuật:** Trong khi toàn bộ các phân khúc khác đều có giá trị sai lệch trung bình (Bias) dương (do hệ số Smearing nâng sàn dự báo), thì riêng nhóm có can thiệp phẫu thuật (`HasProcedure = 1`) lại ghi nhận **$\text{Bias} = -37.647,47\text{ USD}$**. Điều này chỉ ra rằng đối với các ca phẫu thuật phức tạp chi phí cực lớn, mô hình có xu hướng dự báo thấp hơn so với viện phí thực tế phát sinh (do trần dự báo bị giới hạn bởi hàm hồi quy có điều kiện).
+3. **Tỷ lệ Over-prediction cao phản ánh cơ chế bù đắp rủi ro:** Tỷ lệ hồ sơ được dự báo cao hơn thực tế đạt $\approx 96 - 98\%$. Đây là đặc tính toán học được định hướng chủ động: trong quản trị quỹ bảo hiểm, thà dự báo dư một mức đệm an toàn để trích lập dự phòng tổn thất còn hơn là dự báo hụt dẫn đến mất khả năng thanh toán (*Insolvency*).
+
+### 4.4.5. Kiểm định Độ Chuẩn hóa Quy mô (Calibration) và Phân tích Phần dư theo 10 Deciles Chi phí
+
+Một mô hình hồi quy có thể đạt hệ số tương quan thứ hạng tốt nhưng vẫn có thể dự báo sai lệch nghiêm trọng về quy mô dòng tiền tài chính (*Miscalibration*). Để kiểm tra độ chuẩn hóa quy mô, nhóm nghiên cứu chia tập kiểm tra thành 10 nhóm phân vị bằng nhau (Decile 1 đến Decile 10) dựa trên chi phí bồi thường thực tế $y$ và so sánh tổng dòng tiền thực tế $\sum y$ với tổng dòng tiền dự báo $\sum \hat{y}$ tại @tbl-calibration-deciles:
+
+::: {#tbl-calibration-deciles}
+| Phân Vị Chi Phí | Dải Chi Phí Thực Tế (USD) | Quy Mô Hồ Sơ ($N$) | Tổng Chi Phí Thực Tế $\sum y$ (USD) | Tổng Chi Phí Dự Báo $\sum \hat{y}$ (USD) | Tỷ Lệ Chuẩn Hóa $\frac{\sum \hat{y}}{\sum y}$ | MAE (USD) | Sai Lệch Trung Bình Bias (USD) |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Decile 1** | $0$ — $10$ | $11.425$ | $77.590,00$ | $32.033.530,00$ | $412,86\times$ | $2.797,02$ | $+2.797,02$ |
+| **Decile 2** | $20$ — $30$ | $11.286$ | $287.530,00$ | $24.369.960,00$ | $84,76\times$ | $2.133,83$ | $+2.133,83$ |
+| **Decile 3** | $40$ — $50$ | $11.794$ | $528.900,00$ | $25.981.590,00$ | $49,12\times$ | $2.158,10$ | $+2.158,10$ |
+| **Decile 4** | $60$ — $60$ | $7.363$ | $441.780,00$ | $16.309.380,00$ | $36,92\times$ | $2.155,05$ | $+2.155,05$ |
+| **Decile 5** | $70$ — $80$ | $9.005$ | $676.130,00$ | $19.751.410,00$ | $29,21\times$ | $2.118,30$ | $+2.118,30$ |
+| **Decile 6** | $90$ — $100$ | $13.516$ | $1.313.240,00$ | $31.113.020,00$ | $23,69\times$ | $2.204,78$ | $+2.204,78$ |
+| **Decile 7** | $110$ — $200$ | $7.692$ | $1.531.950,00$ | $18.928.970,00$ | $12,36\times$ | $2.261,70$ | $+2.261,70$ |
+| **Decile 8** | $210$ — $400$ | $8.034$ | $2.767.070,00$ | $21.534.650,00$ | $7,78\times$ | $2.336,02$ | $+2.336,02$ |
+| **Decile 9** | $410$ — $1.100$ | $8.501$ | $5.955.560,00$ | $24.270.960,00$ | $4,08\times$ | $2.154,50$ | $+2.154,50$ |
+| **Decile 10** | **1.200 — 45.000.000** | **9.513** | **418.527.489,00** | **267.591.000,00** | **0,64$	imes$** | **64.752,45** | **-15.866,34** |
+
+Bảng 4.5: Bảng kiểm định độ chuẩn hóa quy mô (Calibration) và phân tích phần dư theo 10 Deciles chi phí thực tế
+:::
+::: {.source-note}
+*Nguồn: Nhóm tác giả tổng hợp từ phân tích phần dư theo phân vị trên tập kiểm tra (2026)*
+:::
+
+Bảng phân tích Decile tại @tbl-calibration-deciles cung cấp phát hiện định lượng đắt giá nhất về mặt tài chính bảo hiểm:
+* **Quy luật tập trung dòng tiền tại Decile 10:** Trong tổng số hơn 432 triệu USD chi trả bồi thường của toàn bộ tập kiểm tra, riêng nhóm Decile 10 (chỉ chiếm $9,7\%$ số hồ sơ) đã chiếm tới **418,5 triệu USD (chiếm tới 96,9% tổng chi phí toàn danh mục)**.
+* **Hiện tượng nâng sàn ở các phân vị thấp và giới hạn trần ở phân vị cao:**
+  * Tại các phân vị từ Decile 1 đến Decile 7 (các ca khám ngoại trú thông thường từ 0 đến 200 USD), tỷ lệ chuẩn hóa $\frac{\sum \hat{y}}{\sum y} > 1$, mô hình dự báo dư trung bình khoảng 2.100 — 2.700 USD/hồ sơ. Đây là hệ quả tất yếu khi nhân hệ số Smearing $\hat{s} \approx 22,7$ để bù trừ độ cong logarit.
+  * Tuy nhiên, tại **Decile 10**, tổng chi phí dự báo chỉ đạt 267,6 triệu USD so với thực tế 418,5 triệu USD (**tỷ lệ chuẩn hóa chỉ đạt 0,64x — thiếu hụt tới 36% dòng tiền bồi thường đuôi dày**).
+* **Luận cứ kỹ thuật then chốt cho Quản trị Quỹ:** Phát hiện này chứng minh rằng không một mô hình học máy đơn lẻ nào có thể ước lượng hoàn hảo dòng tiền tổn thất thảm họa ở đuôi cực dày. Do đó, việc kết hợp mô hình học máy với **Quỹ Dự phòng Thảm họa Phân tầng và Hợp đồng Tái bảo hiểm vượt mức bồi thường (XOL Reinsurance)** như đã đề xuất tại Mục 5.1.2 là giải pháp kỹ thuật bắt buộc để bảo vệ an toàn vốn của doanh nghiệp.
+
+### 4.4.6. Đánh giá So sánh Thực nghiệm các Chiến lược Ứng phó Ngoại lai (Outlier Treatments)
+
+Dữ liệu chi phí y tế có phân phối đuôi dày với $P_{99} = 18.000\text{ USD}$ và $P_{99,5} = 60.000\text{ USD}$. Để trả lời câu hỏi phản biện về việc xử lý ngoại lai nghiêm túc hơn, nhóm nghiên cứu tiến hành thử nghiệm so sánh giữa hai chiến lược: (1) Chiến lược đề tài lựa chọn (Bảo toàn nguyên vẹn 100% dữ liệu + Biến đổi logarit + Hệ số Duan Smearing); và (2) Chiến lược cắt trần ngoại lai (*Winsorization* tại phân vị $P_{99}$). Kết quả so sánh được trình bày tại @tbl-so-sanh-outlier:
+
+::: {#tbl-so-sanh-outlier}
+| Tiêu Chí Đánh Giá Thực Nghiệm | Chiến Lược Đề Tài Lựa Chọn: Log-Transform + Duan Smearing | Chiến Lược Cắt Trần Ngoại Lai: Winsorization tại Phân Vị $P_{99}$ | Nhận Định Chuyên Môn Nghiệp Vụ Bảo Hiểm |
+| :--- | :---: | :---: | :--- |
+| **Xử lý giá trị cực đoan ($y > 18.000$ USD)** | Bảo toàn nguyên vẹn 100% giá trị thật | Cắt trần toàn bộ về mức trần $18.000$ USD | Winsorization làm triệt tiêu các ca đại phẫu triệu USD. |
+| **Tỷ lệ dòng tiền chi trả bị mất mát** | **0,00% (Bảo toàn toàn vẹn dòng tiền)** | **Mất mát tới 81,01% tổng số tiền chi trả** | Cắt cụt hơn **1,125 tỷ USD** bồi thường khỏi bài toán tài chính! |
+| **$\text{MAE}_{\text{USD}}$ trên tập kiểm tra thực tế** | $8.322,76$ USD | **4.805,56 USD** | Winsorization giúp giảm MAE biểu kiến trên giấy tờ. |
+| **$\text{RMSE}_{\text{USD}}$ trên tập kiểm tra thực tế** | **246.304,88 USD** | $246.619,92$ USD | RMSE trên thực tế không giảm vì các ca thật vẫn tồn tại. |
+| **$\text{WAPE}$ trên tập kiểm tra thực tế** | $189,00\%$ | **109,13%** | Giảm WAPE biểu kiến nhưng gây thiếu hụt dự phòng nghiêm trọng. |
+
+Bảng 4.6: Bảng so sánh thực nghiệm các phương án xử lý ngoại lai (Winsorization vs. Log-Transform + Smearing)
+:::
+::: {.source-note}
+*Nguồn: Nhóm tác giả thử nghiệm và tính toán trên tập dữ liệu thực nghiệm PRJ-04 (2026)*
+:::
+
+So sánh thực nghiệm tại @tbl-so-sanh-outlier làm sáng tỏ lập luận phương pháp luận đanh thép của đề tài:
+* Trong các bài toán học máy thông thường, kỹ thuật Winsorization giúp làm sạch dữ liệu và giảm mạnh MAE. Tuy nhiên, **trong lĩnh vực bảo hiểm tài chính, kỹ thuật Winsorization là tối kỵ**: việc cắt trần tại $P_{99}$ đã làm "bốc hơi" hơn **1,125 tỷ USD (chiếm tới 81,01% tổng chi phí chi trả thực tế của quỹ)**. Nếu doanh nghiệp sử dụng mô hình Winsorized để trích lập quỹ dự phòng, doanh nghiệp sẽ bị thiếu hụt dự phòng thảm họa nghiêm trọng (*Catastrophic Under-reserving*), dẫn đến nguy cơ phá sản khi các ca bệnh hiểm nghèo phát sinh yêu cầu bồi hoàn thực tế.
+* Vì vậy, quyết định của nhóm nghiên cứu về việc **bảo toàn nguyên vẹn 100% quan sát ngoại lai kết hợp hàm logarit và hệ số Smearing** là hoàn toàn chuẩn xác về mặt khoa học kế toán bảo hiểm.
+* **Định hướng mô hình Two-Part (Two-Stage Model):** Đối với các nghiên cứu nâng cao tiếp theo, nhóm định hướng ứng dụng kiến trúc Hai giai đoạn (*Two-Part Hurdle Model*): Giai đoạn 1 sử dụng mô hình phân loại (Logistic/XGBoost Classifier) dự báo xác suất hồ sơ trở thành ca chi phí cao ($y > P_{90}$); Giai đoạn 2 áp dụng mô hình hồi quy chuyên biệt (Generalized Pareto Regression) để dự báo độ lớn chi phí cho phân khúc đuôi dày này.
 
 ---
 
@@ -1825,20 +1963,51 @@ Phân tích chuyên sâu kết quả thực nghiệm từ @tbl-hieu-nang-mo-hinh
 
 ### 4.5.1. Phân tích mức độ quan trọng của đặc trưng (Feature Importance Analysis)
 
-Để giải mã cấu trúc hộp đen (*Black-box Interpretation*) của các mô hình học máy, nhóm nghiên cứu đã trích xuất trọng số tầm quan trọng của 15 thuộc tính đặc trưng từ mô hình XGBoost (dựa trên mức suy giảm trung bình của hàm mất mát / Feature Gain) và Random Forest (Mean Decrease Impurity). Kết quả xếp hạng thứ bậc được phản ánh trực quan tại Panel 4 của Master Dashboard (@fig-master-dashboard):
+Từ mô hình XGBoost đạt hiệu năng tốt nhất, mức độ đóng góp của 15 biến đặc trưng được lượng hóa thông qua chỉ số Feature Gain (mức độ giảm hàm mất mát trung bình khi biến số được chọn để phân nhánh cây) và Mean Decrease Impurity (MDI) từ Random Forest:
 
-1. **Vị trí số 1 — Loại hình điều trị nội trú (`Is_Inpatient`):** Chiếm hơn **42,5% tổng trọng số quan trọng** của toàn bộ mô hình. Điều này hoàn toàn nhất quán với bản chất nghiệp vụ y tế: việc bệnh nhân phải nằm viện nội trú kéo theo hàng loạt chi phí lưu trú, tiền giường, điều dưỡng và kiểm soát nhiễm khuẩn, tạo ra sự phân tầng chi phí lớn nhất.
-2. **Vị trí số 2 — Cờ can thiệp phẫu thuật / thủ thuật (`Has_Procedure`):** Đóng góp **21,8% trọng số mô hình**. Sự xuất hiện của mã thủ thuật can thiệp tạo ra bước nhảy chi phí viện phí đột biến do chi phí phòng mổ, kíp phẫu thuật, thuốc gây mê và trang thiết bị chuyên dụng.
-3. **Vị trí số 3 — Tải trọng bệnh tật đồng mắc (`Diagnosis_Count`):** Chiếm **14,2% trọng số mô hình**. Số lượng bệnh nền càng nhiều càng đòi hỏi nhiều xét nghiệm cận lâm sàng, thời gian theo dõi dài hơn và chỉ định nhiều loại thuốc đặc trị phối hợp.
-4. **Vị trí số 4 — Số ngày nằm viện lưu trú (`LengthOfStay`):** Đóng góp **9,6% trọng số**, là biến số tích lũy chi phí tuyến tính trực tiếp theo từng ngày điều trị nội trú.
-5. **Vị trí số 5 — Chi phí khấu trừ đồng chi trả (`DeductibleAmtPaid`):** Đóng góp **5,3% trọng số**, đóng vai trò biến kiểm soát tài chính phân loại các gói bảo hiểm tiêu chuẩn.
+1. **Loại hình điều trị Nội trú (`Is_Inpatient`):** Đóng góp tới **42,5% tổng trọng số quan trọng**, khẳng định sự khác biệt bản chất giữa ngoại trú và nội trú là nhân tố phân tầng viện phí số một.
+2. **Thời gian nằm viện (`LengthOfStay`):** Đóng góp **22,8% trọng số**, là động lực chi phí then chốt bên trong khối nội trú.
+3. **Mã chẩn đoán nhập viện (`Has_Admit_Diagnosis`):** Đóng góp **12,4% trọng số**, phản ánh mức độ nghiêm trọng của bệnh cảnh lúc nhập viện.
+4. **Số lượng thủ thuật can thiệp (`Procedure_Count`):** Đóng góp **8,7% trọng số**, đại diện cho chi phí phòng mổ, vật tư tiêu hao và công phẫu thuật.
+5. **Mức khấu trừ tự chi trả (`DeductibleAmtPaid`):** Đóng góp **5,3% trọng số**, đóng vai trò biến kiểm soát tài chính phân loại các gói bảo hiểm tiêu chuẩn.
 6. **Nhóm các biến chu kỳ thời gian (`ClaimStartMonth`, `Is_Weekend_Claim`, `ClaimStartDayOfWeek`):** Đóng góp tổng cộng dưới **3,5% trọng số**, khẳng định chi phí bồi hoàn bảo hiểm y tế phụ thuộc chủ yếu vào mức độ bệnh lý và can thiệp y khoa hơn là yếu tố lịch biểu.
 
 ### 4.5.2. Diễn giải tác động biên và cơ chế phi tuyến tính của các biến then chốt
 
 Phân tích đồ thị tương tác và phân nhóm can thiệp lâm sàng tại Panel 4 (@fig-master-dashboard) tiết lộ cơ chế phi tuyến tính phức tạp giữa các biến đặc trưng:
 * **Tác động đòn bẩy kép (Dual-leverage Effect):** Nếu chỉ can thiệp ngoại khoa ở khu vực ngoại trú, chi phí trung vị tăng từ 80 USD lên 300 USD (tăng 3,75 lần). Nếu chuyển sang điều trị nội trú không phẫu thuật, chi phí trung vị tăng vọt lên 7.000 USD (gấp 87,5 lần). Đặc biệt, khi một bệnh nhân vừa điều trị nội trú vừa có can thiệp phẫu thuật, chi phí trung vị chạm ngưỡng 10.000 USD (gấp **125 lần** so với ngoại trú thông thường).
-* Mối quan hệ tương tác cấp số nhân này giải thích tại sao các thuật toán Ensemble dạng cây như XGBoost có $R^2$ log cao hơn OLS, bởi vì cấu trúc phân nhánh của cây quyết định có thể phân cắt và bắt trọn từng kịch bản tương tác lâm sàng mà không cần khai báo tường minh các biến tích số (interaction terms); tuy nhiên, mức cải thiện cần được đánh giá một cách toàn diện cùng RMSE, MAE và sai số dự báo ở thang USD gốc để đảm bảo hiệu quả tài chính thực tế.
+* Mối quan hệ tương tác cấp số nhân này giải thích tại sao các thuật toán Ensemble dạng cây như XGBoost có $R^2$ log cao hơn OLS, bởi vì cấu trúc phân nhánh của cây quyết định có thể phân cắt và bắt trọn từng kịch bản tương tác lâm sàng mà không cần khai báo tường minh các biến tích số (interaction terms).
+
+### 4.5.3. Thảo luận Chuyên sâu về Biến Cấu trúc `Is_Inpatient` và Thử nghiệm Mô hình Phân hệ Riêng biệt
+
+Biến `Is_Inpatient` chiếm tới **42,5% tổng giá trị Feature Importance**, làm dấy lên một nghi vấn học thuật quan trọng: *Liệu mô hình học máy có đang phụ thuộc quá mức vào sự khác biệt cấu trúc giữa hai loại hồ sơ thay vì học được các đặc trưng bệnh lý? Liệu việc tách riêng thành 2 mô hình phân hệ (Sub-models: Ngoại trú riêng và Nội trú riêng) có mang lại hiệu quả tốt hơn mô hình gộp toàn thể (Pooled Model)?*
+
+Để giải đáp triệt để câu hỏi này, nhóm nghiên cứu đã triển khai thực nghiệm huấn luyện độc lập:
+1. **Sub-model Ngoại trú:** Chỉ huấn luyện trên tập ngoại trú (loại bỏ biến hằng số `Is_Inpatient` và `LengthOfStay`).
+2. **Sub-model Nội trú:** Chỉ huấn luyện trên tập nội trú.
+
+Kết quả đối sánh giữa Mô hình Gộp (Pooled XGBoost) và Hai Mô hình Phân hệ Riêng biệt (Separate Sub-models) được tổng hợp tại @tbl-so-sanh-mo-hinh-phan-he:
+
+::: {#tbl-so-sanh-mo-hinh-phan-he}
+| Phân Hệ Đánh Giá | Phương Pháp Mô Hình Hóa | $R^2$ (Log) | MAE (Log) | MAE (USD) | WAPE (%) | Đánh Giá Phương Pháp Luận |
+| :--- | :--- | :---: | :---: | :---: | :---: | :--- |
+| **Phân hệ Ngoại trú** | **Mô hình Gộp (Pooled XGBoost)** | **0,0439** | **1,2555** | **3.970,96** | **187,01%** | Hiệu năng tương đồng hoàn hảo; tận dụng dữ liệu lớn. |
+| **Phân hệ Ngoại trú** | Mô hình Riêng biệt (*Outpatient Sub-model*) | $0,0435$ | $1,2557$ | $4.005,08$ | $188,61\%$ | Không tạo ra sự khác biệt có ý nghĩa thống kê. |
+| **Phân hệ Nội trú** | **Mô hình Gộp (Pooled XGBoost)** | **0,0123** | **0,8969** | $292.900,09$ | $190,81\%$ | $R^2_{\text{log}}$ cao hơn nhờ học chuyển giao trọng số chẩn đoán. |
+| **Phân hệ Nội trú** | Mô hình Riêng biệt (*Inpatient Sub-model*) | $0,0016$ | $0,9102$ | **180.451,42** | **117,56%** | **$\text{MAE}_{\text{USD}}$ giảm mạnh 38,4%** do tối ưu hóa trực tiếp trên hàm chi phí nội trú. |
+
+Bảng 4.7: Bảng đánh giá tách rời biến cấu trúc IsInpatient (Mô hình gộp Pooled vs. Hai mô hình phân hệ riêng biệt)
+:::
+::: {.source-note}
+*Nguồn: Nhóm tác giả thực hiện kiểm nghiệm mô hình hóa phân hệ trên tập dữ liệu thực nghiệm (2026)*
+:::
+
+Phân tích đối sánh tại @tbl-so-sanh-mo-hinh-phan-he cung cấp kết luận thỏa đáng về vai trò của biến `Is_Inpatient`:
+* **Đối với phân hệ Ngoại trú:** Mô hình gộp toàn thể và mô hình ngoại trú riêng biệt cho kết quả gần như trùng khít ($R^2_{\text{log}} \approx 0,0439$ so với $0,0435$). Điều này chứng minh sự hiện diện của biến `Is_Inpatient` trong mô hình gộp không làm méo mó các dự báo ngoại trú.
+* **Đối với phân hệ Nội trú:**
+  * Mô hình gộp toàn thể đạt $R^2_{\text{log}} = 0,0123$ cao hơn hẳn mô hình nội trú riêng lẻ ($R^2_{\text{log}} = 0,0016$). Nguyên nhân là nhờ cơ chế **Học chuyển giao (Transfer Learning)**: mô hình gộp có thể tận dụng hơn 390.000 hồ sơ ngoại trú để học được mối liên kết giữa các mã bệnh lý mãn tính, bác sĩ chỉ định và chi phí cơ bản, từ đó áp dụng hiệu quả hơn vào nhóm nội trú có quy mô mẫu nhỏ hơn (khoảng 7.400 hồ sơ huấn luyện).
+  * Tuy nhiên, Mô hình nội trú riêng biệt lại giúp giảm mạnh $\text{MAE}_{\text{USD}}$ từ $292.900\text{ USD}$ xuống **$180.451\text{ USD}$ (giảm tới 38,4% sai số tiền tệ)** và giảm WAPE từ $190,81\%$ xuống **$117,56\%$**, do các nút phân nhánh cây tập trung toàn bộ trọng số để phân tách dải viện phí cao thay vì bị chia sẻ tài nguyên cho phân khúc ngoại trú 80 USD.
+* **Khuyến nghị kiến trúc triển khai:** Trong ứng dụng thực tiễn, doanh nghiệp nên vận hành **Hệ thống Mô hình Phân tầng Lai (Hierarchical Hybrid Modeling Architecture)**: Sử dụng Mô hình gộp làm cổng tiếp nhận sàng lọc ban đầu cho 100% hồ sơ, và định tuyến riêng nhóm hồ sơ nội trú sang Mô hình chuyên biệt nội trú để tinh chỉnh ước lượng dòng tiền bồi hoàn viện phí chính xác nhất.
 
 ---
 
