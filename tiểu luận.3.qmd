@@ -1021,7 +1021,7 @@ Bảng 2.4: Ngăn xếp công nghệ và hệ sinh thái thư viện Python sử
 Để đáp ứng chuẩn mực nghiên cứu khoa học và tiêu chí đánh giá nghiêm ngặt của học phần:
 1. **Tuân thủ Chuẩn mực PEP 8:** Toàn bộ mã nguồn Python được cấu trúc sạch sẽ, thụt lề 4 dấu cách, đặt tên biến và hàm tường minh theo quy ước `snake_case`, tách bạch rõ ràng giữa các khối lệnh chuẩn bị dữ liệu và huấn luyện mô hình.
 2. **Kiểm soát Tuyệt đối Hiện tượng Rò rỉ Dữ liệu (Data Leakage):** Việc xử lý điền khuyết và chuẩn hóa thang đo (`fit`) chỉ được thực hiện duy nhất trên tập huấn luyện (Train Set), sau đó áp dụng phép biến đổi (`transform`) thuần túy lên tập kiểm tra (Test Set).
-3. **Cố định Hạt giống Ngẫu nhiên (Random Seed):** Tất cả các thao tác có yếu tố ngẫu nhiên như phân chia dữ liệu `GroupShuffleSplit(..., random_state=42)` và khởi tạo cây trong `RandomForestRegressor(..., random_state=42)`, `XGBRegressor(..., random_state=42)` đều được gán cố định giá trị seed là 42, bảo đảm kết quả nghiên cứu có tính tái lập ổn định 100%.
+3. **Cố định Hạt giống Ngẫu nhiên (Random Seed) và Minh bạch Quy trình:** Tất cả các thao tác có yếu tố ngẫu nhiên như phân chia dữ liệu `GroupShuffleSplit(..., random_state=42)` và khởi tạo cây trong `RandomForestRegressor(..., random_state=42)`, `XGBRegressor(..., random_state=42)` đều được thiết lập cố định giá trị seed là 42 cùng phiên bản thư viện xác định (Python 3.12.10). Điều này bảo đảm tính khả thi tái lập (reproducibility) của thực nghiệm trong cùng điều kiện môi trường; nhóm nghiên cứu khuyến nghị việc nhân rộng pipeline trên các cụm tính toán phân tán hoặc phiên bản thư viện khác nhau cần tiếp tục được đánh giá phương sai thực nghiệm trong các nghiên cứu tương lai.
 
 ---
 
@@ -1882,19 +1882,23 @@ Chương 5 khép lại đề tài nghiên cứu bằng việc chuyển hóa các
 
 Chương được kết cấu thành 5 phần trọng tâm:
 
-1. **Mục 5.1: Đề xuất giải pháp và Chiến lược kinh doanh cho doanh nghiệp:** Chuyển hóa các phát hiện thực nghiệm thành 3 trụ cột chiến lược: Định phí phân tầng rủi ro động, Quản trị quỹ dự phòng tổn thất đuôi dày (IBNR) và Hệ thống giám định bồi thường tự động 3 luồng (Xanh / Vàng / Đỏ) kết hợp Bảng xếp hạng Top Provider dị thường cần ưu tiên thanh tra (@tbl-top-providers-bat-thuong).
-2. **Mục 5.2: Lộ trình triển khai ứng dụng thực tế:** Xác lập khung lộ trình 4 giai đoạn chuyển đổi số khép kín từ khâu chuẩn hóa hạ tầng, tích hợp mô hình, vận hành thử nghiệm đến giám sát MLOps toàn diện (@tbl-lo-trinh-trien-khai).
+1. **Mục 5.1: Khuyến nghị định hướng giải pháp và Chiến lược kinh doanh cho doanh nghiệp:** Chuyển hóa các phát hiện thực nghiệm thành 3 trụ cột khuyến nghị định hướng: Định phí phân tầng rủi ro động, Quản trị quỹ dự phòng tổn thất đuôi dày kết hợp chuyển giao rủi ro tái bảo hiểm và Khung đề xuất phân luồng giám định bồi thường kết hợp Bảng xếp hạng Top Provider dị thường cần ưu tiên thanh tra (@tbl-top-providers-bat-thuong).
+2. **Mục 5.2: Khung lộ trình tham khảo triển khai ứng dụng thực tế:** Xác lập khung lộ trình 4 giai đoạn chuyển đổi số khép kín từ khâu chuẩn hóa hạ tầng, tích hợp mô hình, vận hành thử nghiệm đến giám sát MLOps toàn diện (@tbl-lo-trinh-trien-khai).
 3. **Mục 5.3: Hạn chế của nghiên cứu và Đạo đức dữ liệu:** Phân tích các giới hạn về phạm vi dữ liệu thiếu biến nhân khẩu học và đơn giá dịch vụ vi mô, cùng các nguyên tắc đạo đức AI bắt buộc (Công bằng thuật toán, Trách nhiệm giải trình XAI và Bảo mật quyền riêng tư HIPAA/GDPR).
-4. **Mục 5.4: Hướng phát triển trong tương lai:** Định hướng tích hợp dữ liệu đa nguồn 360 độ người thụ hưởng, ứng dụng kiến trúc Mạng nơ-ron Đồ thị (GNN) phát hiện trục lợi bảo hiểm có tổ chức và triển khai quy trình MLOps liên tục chống trôi dạt dữ liệu (*Data Drift*).
+4. **Mục 5.4: Hướng phát triển trong tương lai:** Định hướng tích hợp dữ liệu đa nguồn 360 độ người thụ hưởng, ứng dụng kiến trúc Mạng nơ-ron Đồ thị (GNN), định hướng MLOps chống trôi dạt dữ liệu và ứng dụng TreeSHAP để diễn giải cục bộ từng hồ sơ.
 5. **Mục 5.5: Kết luận toàn diện đề tài:** Tổng kết câu trả lời thấu đáo cho 4 câu hỏi nghiên cứu (RQ1–RQ4), đánh giá mức độ hoàn thành 4 mục tiêu cụ thể và tổng kết các đóng góp học thuật, thực tiễn và phương pháp luận của đề tài.
 
 ---
 
-## 5.1. Đề xuất giải pháp và Chiến lược kinh doanh cho doanh nghiệp
+> [!NOTE]
+> **Tính chất của các Khuyến nghị Quản trị và Giải pháp Vận hành:**
+> Toàn bộ các định hướng về chiến lược định phí bảo hiểm (Pricing), quản trị quỹ dự phòng bồi thường và chuyển giao rủi ro tái bảo hiểm (Reserving & Reinsurance), mô hình phân luồng giám định tự động (STP Claims Routing) cũng như lộ trình công nghệ MLOps trong Chương 5 được xây dựng dưới dạng **các khuyến nghị định hướng chiến lược (Strategic Guidelines & Recommendations)**. Đây là khung giải pháp tham khảo xuất phát từ các đặc trưng phân phối và kết quả mô hình hóa trên tập dữ liệu thực nghiệm, không phải là kết quả đo lường thực nghiệm hay mô phỏng tác động tài chính/vốn tại một doanh nghiệp bảo hiểm cụ thể. Trong thực tế triển khai, các định chế bảo hiểm cần tiến hành đánh giá tính khả thi, phân tích chi phí - lợi ích (Cost-Benefit Analysis) và kiểm định mức độ chấp nhận rủi ro theo quy định pháp lý hiện hành.
 
-Từ các bằng chứng thực nghiệm định lượng thu được từ quy trình CRISP-DM trên 527.288 hồ sơ bảo hiểm y tế Medicare và mô hình XGBoost (mô hình có hiệu năng tốt nhất), nhóm nghiên cứu đề xuất **3 trụ cột chiến lược kinh doanh và quản trị rủi ro cốt lõi** cho các doanh nghiệp bảo hiểm y tế và cơ quan quản lý quỹ bảo hiểm xã hội:
+## 5.1. Khuyến nghị định hướng giải pháp và Chiến lược kinh doanh cho doanh nghiệp
 
-### 5.1.1. Chiến lược Định phí Phân tầng Rủi ro Động (Dynamic Risk-based Actuarial Pricing)
+Từ các phát hiện định lượng thu được từ quy trình CRISP-DM trên 527.288 hồ sơ bảo hiểm y tế Medicare và mô hình XGBoost (mô hình có hiệu năng tốt nhất trong 4 mô hình thử nghiệm), nhóm nghiên cứu đề xuất **3 trụ cột khuyến nghị định hướng chiến lược kinh doanh và quản trị rủi ro** cho các doanh nghiệp bảo hiểm y tế và cơ quan quản lý quỹ bảo hiểm xã hội:
+
+### 5.1.1. Khuyến nghị Định hướng Định phí Phân tầng Rủi ro Động (Dynamic Risk-based Actuarial Pricing Guidelines)
 
 Thực nghiệm tại Chương 3 (@tbl-doi-soat-phan-he) đã chứng minh chi phí điều trị nội trú trung vị (7.000 USD) gấp **87,5 lần** so với ngoại trú (80 USD), và chi phí trung bình (88.049,69 USD) gấp **36,65 lần**. Hơn nữa, việc có can thiệp phẫu thuật/thủ thuật tạo ra bước nhảy chi phí viện phí lên tới 10.000 USD (gấp 125 lần so với ngoại trú thông thường). 
 
@@ -1905,23 +1909,24 @@ Do đó, doanh nghiệp bảo hiểm tuyệt đối không thể áp dụng bi�
 2. **Cơ chế tái thẩm định phí linh hoạt (Experience Rating):**
    * Doanh nghiệp bảo hiểm cần áp dụng thuật toán chấm điểm rủi ro định kỳ dựa trên mô hình XGBoost. Các nhóm khách hàng doanh nghiệp hoặc cá nhân có chỉ số bệnh nền phức tạp nhưng duy trì phác đồ phòng bệnh tốt sẽ được hưởng chính sách giảm phí thưởng thâm niên (No-claim Bonus), trong khi các nhóm phát sinh nhiều ca nằm viện kéo dài sẽ chịu mức phụ phí rủi ro (*Risk Loading*) tương ứng.
 
-### 5.1.2. Chiến lược Quản trị Quỹ Dự phòng Nghiệp vụ Đuôi dày (Solvency & Capital Reserve Management)
+### 5.1.2. Khuyến nghị Định hướng Quản trị Quỹ Dự phòng và Chuyển giao Rủi ro Tái bảo hiểm (Loss Reserving & Reinsurance Guidelines)
 
 Phân tích hình thái phân phối tại Mục 3.4 (@tbl-thong-ke-mo-ta-tong-the) khẳng định biến mục tiêu chi phí bồi thường thô ($y$) có phân phối đuôi dày cực đoan (*Super Heavy-tailed Distribution*) với độ lệch phải $\gamma_1 = +179,29$, độ nhọn $\gamma_2 = 42.684,03$ và các ca bệnh ngoại lai tài chính lên tới **47.000.000 USD**.
 
-Trong quản trị tài chính bảo hiểm, việc ước lượng quỹ dự phòng tổn thất bồi thường chưa giải quyết (IBNR - Incurred But Not Reported) bằng các phương pháp kinh điển (như Chain-Ladder giả định phân phối chuẩn) sẽ dẫn đến **ước lượng thiếu hụt dự phòng nghiêm trọng (Under-reserving)**, đe dọa trực tiếp đến biên khả năng thanh toán (*Solvency Margin*) của doanh nghiệp khi xảy ra các đợt bồi thường thảm họa:
-1. **Bắt buộc áp dụng Phép biến đổi Logarit kết hợp Hệ số hiệu chỉnh Smearing:**
-   * Khi sử dụng mô hình dự báo chi phí y tế trên thang đo logarit $\ln(y + 1)$, doanh nghiệp bắt buộc phải nhân với hệ số hiệu chỉnh Smearing của Duan (1983) (như đã chứng minh tại Chương 4: $\hat{s} = 22,7250$ ở mô hình XGBoost và $\hat{s} = 23,4365$ ở mô hình OLS) để bù đắp hiện tượng thiên lệch dưới do bất đẳng thức Jensen gây ra.
-2. **Thiết lập Quỹ Dự phòng Thảm họa Phân tầng (Tiered Catastrophic Reserve Buffer):**
-   * Doanh nghiệp cần trích lập một quỹ dự phòng đặc thù dành riêng cho nhóm 1% chi phí cực đoan (nhóm hồ sơ vượt ngưỡng 22.500 USD ở nội trú và 690 USD ở ngoại trú). Đồng thời, doanh nghiệp cần kích hoạt cơ chế chuyển giao rủi ro thông qua **Hợp đồng Tái bảo hiểm vượt mức bồi thường (Excess of Loss Reinsurance - XOL)** đối với các khiếu nại viện phí vượt quá hạn mức tự giữ (Retention Limit, ví dụ trên 500.000 USD/vụ tổn thất).
+Trong quản trị tài chính bảo hiểm, việc ước lượng quỹ dự phòng tổn thất bồi thường chưa giải quyết (IBNR - Incurred But Not Reported) bằng các phương pháp kinh điển (như Chain-Ladder giả định phân phối chuẩn) có thể dẫn đến rủi ro ước lượng thiếu hụt dự phòng nghiêm trọng (*Under-reserving*) khi đối mặt với dữ liệu có đuôi dày. Do đó, nhóm nghiên cứu đề xuất các khuyến nghị định hướng:
+1. **Khuyến nghị áp dụng Phép biến đổi Logarit kết hợp Hệ số hiệu chỉnh Smearing:**
+   * Khi sử dụng mô hình dự báo chi phí y tế trên thang đo logarit $\ln(y + 1)$, việc nhân với hệ số hiệu chỉnh Smearing của Duan (1983) (như đã chứng minh tại Chương 4: $\hat{s} = 22,7250$ ở mô hình XGBoost và $\hat{s} = 23,4365$ ở mô hình OLS) là giải pháp kỹ thuật cần thiết để bù đắp hiện tượng thiên lệch dưới do bất đẳng thức Jensen gây ra.
+2. **Định hướng Thiết lập Quỹ Dự phòng Thảm họa và Hợp đồng Tái bảo hiểm (XOL Reinsurance):**
+   * *Khuyến nghị đệm dự phòng phân tầng:* Doanh nghiệp nên cân nhắc thiết lập quỹ dự phòng đặc thù dành riêng cho nhóm chi phí cực đoan (nhóm hồ sơ vượt ngưỡng $P_{99}$ tại 22.500 USD ở nội trú và 690 USD ở ngoại trú).
+   * *Định hướng chuyển giao rủi ro tái bảo hiểm:* Để bảo vệ biên khả năng thanh toán (*Solvency Margin*), doanh nghiệp có thể nghiên cứu các giải pháp chuyển giao rủi ro đuôi dày thông qua hợp đồng Tái bảo hiểm vượt mức bồi thường (*Excess of Loss Reinsurance - XOL*). Các thông số cụ thể về mức tự giữ (*Retention Limit*) và phí tái bảo hiểm cần được mô phỏng chi tiết bằng các mô hình tính toán định phí - vốn chuyên sâu theo chuẩn Solvency II hoặc Risk-Based Capital (RBC) trong các nghiên cứu khả thi tiếp theo.
 
-### 5.1.3. Chiến lược Giám định Bồi thường Tự động 3 Luồng và Cơ chế Hậu kiểm Cơ sở Y tế
+### 5.1.3. Khung Đề xuất Phân luồng Giám định Bồi thường và Cơ chế Sàng lọc Rủi ro Cơ sở Y tế
 
 Thay vì tiến hành giám định thủ công 100% hồ sơ bồi thường vừa gây lãng phí chi phí vận hành vừa tạo độ trễ giải ngân, doanh nghiệp bảo hiểm cần tích hợp mô hình XGBoost (mô hình có hiệu năng tốt nhất) vào cổng tiếp nhận khiếu nại để phân luồng tự động:
 
-1. **Luồng Xanh (Straight-Through Processing - Phê duyệt tự động trong 30 giây):**
-   * *Điều kiện:* Hồ sơ ngoại trú, chi phí bồi hoàn dưới 300 USD, không can thiệp thủ thuật (`Has_Procedure = 0`), số mã bệnh $\le 2$, và cơ sở y tế nằm trong danh sách uy tín.
-   * *Tác động:* Nhóm này chiếm tới **~80% tổng số lượng giao dịch** bồi hoàn nhưng chỉ chiếm tỷ trọng chi phí rất nhỏ. Việc tự động hóa giải ngân tức thì giúp doanh nghiệp cắt giảm tới **70% chi phí nhân sự giám định sự vụ**, đồng thời nâng cao chỉ số hài lòng khách hàng (NPS).
+1. **Luồng Xanh (Straight-Through Processing - Khuyến nghị định hướng phê duyệt tự động hóa):**
+   * *Điều kiện đề xuất tham khảo:* Hồ sơ ngoại trú, chi phí bồi hoàn dưới 300 USD, không can thiệp thủ thuật (`Has_Procedure = 0`), số mã bệnh $\le 2$, và cơ sở y tế không thuộc danh sách có cảnh báo rủi ro cao.
+   * *Kỳ vọng vận hành định hướng:* Trên tập dữ liệu thực nghiệm, nhóm hồ sơ ngoại trú đơn giản này chiếm tỷ trọng áp đảo về số lượng (**~80% tổng số giao dịch**) nhưng phát sinh chi phí trung vị thấp (chỉ 80 USD). Về mặt quản trị kinh doanh, doanh nghiệp có thể đặt mục tiêu xây dựng quy trình phê duyệt tự động tức thì (Straight-Through Processing - STP) cho nhóm rủi ro thấp nhằm hướng tới rút ngắn thời gian xử lý khiếu nại (kỳ vọng tính bằng giây) và tối ưu hóa chi phí nhân sự cho các sự vụ đơn giản. Cần lưu ý rằng mức độ tiết giảm chi phí vận hành và tỷ lệ tự động hóa cụ thể là mục tiêu kỳ vọng định hướng, cần được doanh nghiệp đo lường và kiểm chứng qua các dự án thử nghiệm thí điểm (*Pilot Testing*) trước khi triển khai đại trà.
 2. **Luồng Vàng (Semi-automated Review - Giám định bán tự động có kiểm soát):**
    * *Điều kiện:* Hồ sơ nội trú thông thường hoặc ngoại trú có phẫu thuật, chi phí thực tế $y$ nằm trong dải tin cậy dự báo của mô hình: $\hat{y} - 1,5 \cdot \text{RMSE} \le y \le \hat{y} + 1,5 \cdot \text{RMSE}$.
    * *Tác động:* Chiếm khoảng 18% số lượng hồ sơ. Giám định viên chỉ cần đối soát lướt qua chứng từ viện phí và hóa đơn thuốc theo danh mục do hệ thống gợi ý, rút ngắn thời gian xử lý từ vài tuần xuống dưới 24 giờ.
@@ -1961,7 +1966,7 @@ Dựa trên kết quả giám định tại @tbl-top-providers-bat-thuong, nhóm
 
 ---
 
-## 5.2. Lộ trình triển khai ứng dụng thực tế
+## 5.2. Khung lộ trình tham khảo triển khai ứng dụng thực tế
 
 Để đưa các kết quả nghiên cứu học thuật của đề tài vào vận hành thực tế trong môi trường sản xuất (*Production Environment*) của doanh nghiệp bảo hiểm, nhóm nghiên cứu đề xuất **Lộ trình chuyển đổi số 4 giai đoạn** được lượng hóa tại @tbl-lo-trinh-trien-khai:
 
@@ -1971,12 +1976,12 @@ Dựa trên kết quả giám định tại @tbl-top-providers-bat-thuong, nhóm
 | **Giai đoạn 1: Chuẩn hóa Hạ tầng Dữ liệu & API** | Tháng 1 — Tháng 3 | Thiết lập đường ống dữ liệu sạch chuẩn tắc và module hóa các thuật toán tiền xử lý | • Đóng gói mã nguồn làm sạch Regex và kiểm toán dữ liệu từ Chương 3 thành Microservices.<br>• Xây dựng cơ sở dữ liệu Data Lakehouse hỗ trợ truy vấn song song.<br>• Chuẩn hóa API tiếp nhận hồ sơ đầu vào theo chuẩn y tế FHIR / HL7. | • *Rủi ro:* Dữ liệu thô từ bệnh viện gửi về không đồng nhất định dạng.<br>• *Giải pháp:* Thiết lập bộ lọc dữ liệu tự động từ chối bản ghi lỗi ngay tại cổng Gateway. |
 | **Giai đoạn 2: Tích hợp Mô hình & Giám sát Bán Tự Động** | Tháng 4 — Tháng 6 | Đóng gói mô hình Machine Learning và thử nghiệm cơ chế phân luồng hồ sơ | • Triển khai mô hình XGBoost (mô hình có hiệu năng tốt nhất) dưới dạng dịch vụ suy luận thời gian thực (Real-time Inference API).<br>• Tích hợp hệ thống chấm điểm rủi ro bồi thường vào phần mềm Core-Insurance.<br>• Thiết lập Dashboard giám sát giám định bồi thường theo thời gian thực. | • *Rủi ro:* Độ trễ suy luận mô hình cao khi có lượng lớn hồ sơ gửi về cùng lúc.<br>• *Giải pháp:* Tối ưu hóa mô hình bằng ONNX Runtime và kỹ thuật bộ nhớ đệm Redis Cache. |
 | **Giai đoạn 3: Vận hành Song song (Shadow Mode)** | Tháng 7 — Tháng 9 | Thử nghiệm mô hình song song với quy trình giám định thủ công để hiệu chuẩn ngưỡng | • Chạy hệ thống ngầm song song (Shadow Testing) trên 100% hồ sơ thực tế mà không can thiệp quyết định con người.<br>• Đối chiếu tỷ lệ trùng khớp giữa phán quyết của mô hình và giám định viên kỳ cựu.<br>• Hiệu chỉnh ngưỡng cắt phân loại Luồng Xanh, Vàng, Đỏ để cân bằng sai số Type I và Type II. | • *Rủi ro:* Giám định viên e ngại và từ chối áp dụng khuyến nghị của AI.<br>• *Giải pháp:* Tổ chức các buổi đào tạo chuyển giao công nghệ và giải thích rõ tính minh bạch của XAI. |
-| **Giai đoạn 4: Vận hành Toàn diện & Tự động Hóa MLOps** | Tháng 10 — Tháng 12 | Khởi chạy chính thức cơ chế tự động phê duyệt và kích hoạt hệ thống MLOps liên tục | • Chính thức tự động phê duyệt Luồng Xanh 30 giây đối với 80% hồ sơ đạt chuẩn.<br>• Tự động xuất báo cáo thanh tra đối với các cơ sở y tế có điểm $Z > +3,0$.<br>• Thiết lập đường ống CI/CD/CT (Continuous Training) tự động giám sát trôi dạt dữ liệu (*Data Drift*). | • *Rủi ro:* Lạm phát viện phí hoặc chính sách y tế mới làm suy thoái độ chính xác mô hình.<br>• *Giải pháp:* Cơ chế kích hoạt cảnh báo tự động huấn luyện lại mô hình định kỳ hàng quý. |
+| **Giai đoạn 4: Vận hành Toàn diện & Tự động Hóa MLOps** | Tháng 10 — Tháng 12 | Khởi chạy chính thức cơ chế tự động phê duyệt và kích hoạt hệ thống MLOps liên tục | • Đưa vào vận hành thử nghiệm cơ chế phê duyệt tự động Luồng Xanh đối với nhóm hồ sơ ngoại trú rủi ro thấp đạt chuẩn.<br>• Tự động xuất báo cáo thanh tra đối với các cơ sở y tế có điểm $Z > +3,0$.<br>• Thiết lập đường ống CI/CD/CT (Continuous Training) tự động giám sát trôi dạt dữ liệu (*Data Drift*). | • *Rủi ro:* Lạm phát viện phí hoặc chính sách y tế mới làm suy thoái độ chính xác mô hình.<br>• *Giải pháp:* Cơ chế kích hoạt cảnh báo tự động huấn luyện lại mô hình định kỳ hàng quý. |
 
 Bảng 5.2: Khung lộ trình 4 giai đoạn triển khai hệ thống học máy giám định bồi thường trong doanh nghiệp bảo hiểm
 :::
 ::: {.source-note}
-*Nguồn: Nhóm tác giả đề xuất dựa trên mô hình triển khai giải pháp Khoa học Dữ liệu thực nghiệm (2026)*
+*Nguồn: Nhóm tác giả đề xuất dưới dạng khung tham chiếu định hướng triển khai (2026)*
 :::
 
 ---
@@ -2003,7 +2008,7 @@ Việc ứng dụng trí tuệ nhân tạo và học máy vào lĩnh vực bảo
    * Mô hình dự báo chi phí và phát hiện bất thường không được phép trở thành công cụ phân biệt đối xử đối với các nhóm bệnh nhân yếu thế, người mắc bệnh hiểm nghèo hoặc người cao tuổi có chi phí điều trị tự nhiên cao.
    * Doanh nghiệp bảo hiểm không được sử dụng dự báo chi phí cao của mô hình làm căn cứ từ chối quyền tham gia bảo hiểm hoặc áp đặt mức phí bảo hiểm cắt cổ đối với người bệnh thực sự cần bảo vệ an sinh xã hội.
 2. **Tính Minh bạch và Quyền được Diễn giải (Explainable AI - XAI):**
-   * Quyết định của mô hình AI không bao giờ được hoạt động như một "hộp đen" tuyệt đối. Mọi phán quyết chuyển hồ sơ sang Luồng Đỏ thanh tra hoặc tạm dừng chi trả bắt buộc phải đi kèm văn bản giải trình lý do rõ ràng, lượng hóa dựa trên các chỉ số khoa học minh bạch (như độ lệch phần dư $Z$-score, chỉ số tương quan đóng góp đặc trưng SHAP / Feature Gain như đã phân tích tại Mục 4.5).
+   * Quyết định của mô hình AI không bao giờ được hoạt động như một "hộp đen" tuyệt đối. Mọi phán quyết chuyển hồ sơ sang Luồng Đỏ thanh tra hoặc tạm dừng chi trả bắt buộc phải đi kèm văn bản giải trình lý do rõ ràng, lượng hóa dựa trên các chỉ số khoa học minh bạch (như độ lệch phần dư $Z$-score, mức độ đóng góp của các thuộc tính thông qua Feature Importance bao gồm Feature Gain của XGBoost và Mean Decrease Impurity của Random Forest như đã phân tích tại Mục 4.5).
 3. **Bảo mật Quyền riêng tư và Tuân thủ Pháp lý (HIPAA & GDPR Compliance):**
    * Quá trình huấn luyện và vận hành mô hình phải tuân thủ nghiêm ngặt Luật An toàn thông tin mạng Việt Nam và các tiêu chuẩn bảo mật y tế quốc tế (HIPAA). Toàn bộ mã định danh cá nhân (`BeneID`, mã thẻ bảo hiểm) phải được băm một chiều (One-way Hashing) và mã hóa cấp dữ liệu lưu trữ (Encryption at Rest/in Transit).
 
@@ -2023,11 +2028,18 @@ Từ các hạn chế và tiềm năng ứng dụng đã mở ra, nhóm nghiên 
 * Trong thực tế, các hành vi gian lận bảo hiểm tinh vi thường không diễn ra đơn lẻ ở từng hồ sơ bồi thường mà hoạt động theo đường dây liên kết có tổ chức (*Collusion Fraud Rings*) giữa bệnh nhân, bác sĩ chỉ định và cơ sở y tế.
 * Hướng phát triển tiếp theo là xây dựng mạng đồ thị không gian không đồng nhất (Heterogeneous Information Network - HIN) kết nối các thực thể: Bệnh nhân $\leftrightarrow$ Bác sĩ $\leftrightarrow$ Bệnh viện $\leftrightarrow$ Mã chẩn đoán ICD-9. Ứng dụng các thuật toán học sâu đồ thị tiên tiến (Graph Convolutional Networks - GCN, Graph Attention Networks - GAT) để nhận diện các cụm cấu trúc gian lận ẩn, kê khống dịch vụ và luân chuyển bệnh nhân giả mạo.
 
-### 5.4.3. Thiết lập Khung Vận hành MLOps Tự động Giám sát Trôi dạt Dữ liệu (Continuous MLOps Pipeline)
+### 5.4.3. Định hướng Thiết lập Khung Vận hành MLOps Giám sát Trôi dạt Dữ liệu (Continuous MLOps Pipeline)
 
-* Xây dựng kiến trúc hạ tầng MLOps hoàn chỉnh trên nền tảng Docker/Kubernetes kết hợp MLflow:
+* Về mặt kiến trúc công nghệ dài hạn, doanh nghiệp có thể định hướng xây dựng hạ tầng MLOps trên nền tảng Docker/Kubernetes kết hợp MLflow nhằm:
   * Tự động theo dõi độ trôi dạt phân phối dữ liệu đầu vào (*Data Drift*) và trôi dạt khái niệm hành vi viện phí (*Concept Drift*) theo thời gian.
-  * Tự độn+g kích hoạt chu trình tái huấn luyện mô hình (Continuous Training - CT) khi chỉ số phân kỳ Population Stability Index (PSI) vượt ngưỡng 0,2, bảo đảm mô hình luôn thích ứng nhạy bén với lạm phát chi phí y tế và các phác đồ điều trị mới của ngành y.
+  * Thiết lập cơ chế kích hoạt chu trình tái huấn luyện mô hình (Continuous Training - CT) khi chỉ số phân kỳ Population Stability Index (PSI) vượt ngưỡng 0,2, bảo đảm mô hình luôn thích ứng nhạy bén với lạm phát chi phí y tế và các phác đồ điều trị mới của ngành y.
+
+### 5.4.4. Ứng dụng Thuật toán TreeSHAP Giải thích Cục bộ Từng Hồ sơ Bồi hoàn (Local Interpretability)
+
+* Trong phạm vi nghiên cứu này, tính diễn giải của các mô hình học máy được thực hiện ở cấp độ toàn cục (*Global Feature Importance*) thông qua chỉ số Gain của XGBoost và Mean Decrease Impurity (MDI) của Random Forest. Phương pháp này lượng hóa hiệu quả tầm quan trọng tổng thể của từng biến số trên toàn bộ tập dữ liệu, nhưng chưa phản ánh chi tiết sự đóng góp cụ thể của từng biến số đối với một quyết định bồi thường riêng lẻ.
+* Hướng phát triển chuyên sâu tiếp theo là ứng dụng giá trị SHAP (*SHapley Additive exPlanations*, Lundberg & Lee, 2017) với thuật toán tối ưu TreeSHAP:
+  * Lượng hóa đóng góp biên (*Marginal Contribution*) của từng đặc trưng bệnh lý và chi phí cho từng hồ sơ bồi thường cá nhân hóa (*Local Explanation*).
+  * Xuất biểu đồ thác nước (*Waterfall Plot*) hoặc biểu đồ lực đẩy (*Force Plot*) đính kèm mỗi hồ sơ bị gắn cờ Luồng Đỏ, giúp giám định viên y tế nắm bắt tức thì lý do mô hình dự báo chi phí vượt trội mà không coi mô hình như một "hộp đen".
 
 ---
 
@@ -2072,7 +2084,7 @@ Trải qua toàn bộ chu trình Khoa học Dữ liệu CRISP-DM từ khâu ki�
    * Cung cấp bằng chứng thực nghiệm quy mô lớn (> 520.000 hồ sơ) khẳng định tính ưu việt của phương pháp tiếp cận biến đổi logarit kết hợp hệ số hiệu chỉnh Smearing (Duan, 1983) và các thuật toán ensemble học máy so với mô hình GLM thuần túy khi xử lý dữ liệu chi phí y tế có đuôi dày cực đoan.
    * Thiết lập quy chuẩn kiểm soát rò rỉ dữ liệu cấp bệnh nhân (`GroupShuffleSplit`) và ma trận phân loại khả năng khắc phục lỗi dữ liệu, tạo tài liệu tham khảo phương pháp luận có giá trị cho các nghiên cứu tiếp theo trong chuyên ngành Phân tích Dữ liệu Bảo hiểm & Y tế.
 2. **Đóng góp về mặt Thực tiễn Quản trị Doanh nghiệp:**
-   * Đề xuất mô hình phân luồng giám định bồi thường tự động 3 luồng (Xanh / Vàng / Đỏ), cho phép tự động phê duyệt tới 80% hồ sơ bồi hoàn trong 30 giây, giúp doanh nghiệp tiết kiệm 70% chi phí nhân sự vận hành.
+   * Đề xuất khung kiến trúc phân luồng giám định bồi thường 3 luồng (Xanh / Vàng / Đỏ), định hướng cơ chế tự động hóa phê duyệt (STP) đối với nhóm hồ sơ ngoại trú rủi ro thấp nhằm tối ưu hóa chi phí vận hành và nâng cao trải nghiệm khách hàng.
    * Xây dựng bộ công cụ sàng lọc rủi ro cơ sở y tế dựa trên điểm $Z$-score và tỷ lệ $\text{Excess Ratio}$, cung cấp giải pháp định lượng hỗ trợ cơ quan bảo hiểm ưu tiên thanh tra, đối chiếu hồ sơ bệnh án gốc và chứng từ trước khi đưa ra kết luận về các sai sót hay hành vi lạm dụng chỉ định điều trị.
 3. **Đóng góp về mặt Kỹ năng Khoa học Dữ liệu Thực hành:**
    * Chứng minh năng lực làm chủ trọn vẹn quy trình CRISP-DM từ dữ liệu thô nhiễm bẩn đến mô hình học máy tối ưu trên hệ sinh thái mã nguồn mở Python (`pandas`, `numpy`, `scipy`, `scikit-learn`, `xgboost`, `matplotlib`, `seaborn`), khẳng định tính khả thi cao của việc ứng dụng công nghệ Khoa học Dữ liệu vào giải quyết bài toán kinh tế - xã hội tại Việt Nam.
