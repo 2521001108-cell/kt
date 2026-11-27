@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CMS Medicare Healthcare Cost Analytics Dashboard</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    @keyframes pulse-subtle {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.85; }
+    }
+    .animate-subtle { animation: pulse-subtle 3s infinite ease-in-out; }
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0,0,0,0.05); }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(100,116,139,0.3); border-radius: 3px; }
+  </style>
+</head>
+<body class="bg-[var(--background,#f8fafc)] text-[var(--foreground,#0f172a)] min-h-screen p-4 md:p-6 antialiased font-sans">
+  <div class="max-w-7xl mx-auto space-y-6">
+
+    <!-- HEADER BLOCK -->
+    <header class="bg-[var(--card,#ffffff)] border border-[var(--card-border,#e2e8f0)] rounded-2xl p-5 md:p-6 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-2 mb-1.5">
+          <span class="px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider bg-blue-100 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
+            Medicare CMS PRJ-04 • CRISP-DM
+          </span>
+          <span class="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+            N=527.288 Claims
+          </span>
+        </div>
+        <h1 class="text-xl md:text-2xl font-black tracking-tight text-[var(--foreground,#0f172a)]">
+          EXECUTIVE HEALTHCARE COST & RISK ANALYTICS DASHBOARD
+        </h1>
+        <p class="text-xs md:text-sm text-[var(--muted-foreground,#64748b)] mt-0.5">
+          Hệ thống trực quan hóa toàn diện quy trình kiểm toán dữ liệu, đối chuẩn 4 mô hình Machine Learning và sàng lọc rủi ro cơ sở y tế
+        </p>
+      </div>
+
+      <div class="flex items-center gap-3 self-start md:self-center">
+        <div class="text-right hidden sm:block">
+          <div class="text-xs font-semibold text-[var(--muted-foreground,#64748b)]">Nhóm nghiên cứu: 06</div>
+          <div class="text-xs font-bold text-blue-600 dark:text-blue-400">Phan Thị Quế Trân & Nguyễn Ngọc Phương Thảo</div>
+        </div>
+        <div class="h-9 w-9 rounded-xl bg-blue-600 flex items-center justify-center text-white font-black text-sm shadow">
+          AGY
+        </div>
+      </div>
+    </header>
+
+    <!-- 4 TOP KPI CARDS -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <!-- KPI 1 -->
+      <div class="bg-[var(--card,#ffffff)] border border-[var(--card-border,#e2e8f0)] rounded-xl p-4 shadow-sm hover:shadow transition-shadow">
+        <div class="flex items-center justify-between text-xs text-[var(--muted-foreground,#64748b)] mb-1">
+          <span class="font-semibold uppercase tracking-wider">Hồ sơ Model-Ready</span>
+          <span class="p-1 rounded bg-blue-50 text-blue-600 font-bold">98,54%</span>
+        </div>
+        <div class="text-2xl font-black text-blue-700 dark:text-blue-400">493.211</div>
+        <div class="text-xs text-[var(--muted-foreground,#64748b)] mt-1.5 flex items-center justify-between">
+          <span>Gốc: 527.288 ca</span>
+          <span class="text-amber-600 font-medium">Cô lập 7.690 Clawback</span>
+        </div>
+        <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-1.5 mt-2">
+          <div class="bg-blue-600 h-1.5 rounded-full" style="width: 93.5%"></div>
+        </div>
+      </div>
+
+      <!-- KPI 2 -->
+      <div class="bg-[var(--card,#ffffff)] border border-[var(--card-border,#e2e8f0)] rounded-xl p-4 shadow-sm hover:shadow transition-shadow">
+        <div class="flex items-center justify-between text-xs text-[var(--muted-foreground,#64748b)] mb-1">
+          <span class="font-semibold uppercase tracking-wider">Chênh lệch Nội/Ngoại trú</span>
+          <span class="p-1 rounded bg-rose-50 text-rose-600 font-bold">x87,5 Lần</span>
+        </div>
+        <div class="text-2xl font-black text-rose-600 dark:text-rose-400">$7.000 <span class="text-sm font-normal text-[var(--muted-foreground,#64748b)]">vs $80</span></div>
+        <div class="text-xs text-[var(--muted-foreground,#64748b)] mt-1.5 flex items-center justify-between">
+          <span>TB Nội: $88.049,69</span>
+          <span class="text-rose-600 font-medium">Thâu tóm 36% tiền</span>
+        </div>
+        <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-1.5 mt-2">
+          <div class="bg-rose-600 h-1.5 rounded-full" style="width: 87.5%"></div>
+        </div>
+      </div>
+
+      <!-- KPI 3 -->
+      <div class="bg-[var(--card,#ffffff)] border border-[var(--card-border,#e2e8f0)] rounded-xl p-4 shadow-sm hover:shadow transition-shadow">
+        <div class="flex items-center justify-between text-xs text-[var(--muted-foreground,#64748b)] mb-1">
+          <span class="font-semibold uppercase tracking-wider">Mô hình Tốt nhất (Log)</span>
+          <span class="p-1 rounded bg-teal-50 text-teal-600 font-bold">R² = 11,47%</span>
+        </div>
+        <div class="text-2xl font-black text-teal-600 dark:text-teal-400">XGBoost</div>
+        <div class="text-xs text-[var(--muted-foreground,#64748b)] mt-1.5 flex items-center justify-between">
+          <span>RMSE_log: 1,7559</span>
+          <span class="text-teal-600 font-medium">Train: 2,92s (5,7x RF)</span>
+        </div>
+        <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-1.5 mt-2">
+          <div class="bg-teal-600 h-1.5 rounded-full" style="width: 100%"></div>
+        </div>
+      </div>
+
+      <!-- KPI 4 -->
+      <div class="bg-[var(--card,#ffffff)] border border-[var(--card-border,#e2e8f0)] rounded-xl p-4 shadow-sm hover:shadow transition-shadow">
+        <div class="flex items-center justify-between text-xs text-[var(--muted-foreground,#64748b)] mb-1">
+          <span class="font-semibold uppercase tracking-wider">Tập trung Dòng tiền (P99)</span>
+          <span class="p-1 rounded bg-amber-50 text-amber-600 font-bold">Top 1% Hồ sơ</span>
+        </div>
+        <div class="text-2xl font-black text-amber-600 dark:text-amber-400">86,89% <span class="text-sm font-normal text-[var(--muted-foreground,#64748b)]">Tổng chi trả</span></div>
+        <div class="text-xs text-[var(--muted-foreground,#64748b)] mt-1.5 flex items-center justify-between">
+          <span>Skewness: +179,29</span>
+          <span class="text-amber-600 font-medium">Winsor cắt 81% tiền</span>
+        </div>
+        <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-1.5 mt-2">
+          <div class="bg-amber-600 h-1.5 rounded-full" style="width: 86.89%"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NAVIGATION TABS -->
+    <div class="flex items-center gap-2 border-b border-[var(--card-border,#e2e8f0)] pb-1 overflow-x-auto custom-scrollbar">
+      <button onclick="switchTab('tab-overview')" id="btn-tab-overview" class="tab-btn px-4 py-2 text-xs md:text-sm font-bold rounded-lg border border-transparent bg-blue-600 text-white shadow-sm flex items-center gap-2 whitespace-nowrap">
+        <span>1. Tổng quan & Luồng Dữ liệu</span>
+      </button>
+      <button onclick="switchTab('tab-audit')" id="btn-tab-audit" class="tab-btn px-4 py-2 text-xs md:text-sm font-semibold rounded-lg border border-transparent text-[var(--muted-foreground,#64748b)] hover:bg-slate-100 dark:hover:bg-slate-800 transition whitespace-nowrap">
+        <span>2. Kiểm toán & EDA Lâm sàng</span>
+      </button>
+      <button onclick="switchTab('tab-models')" id="btn-tab-models" class="tab-btn px-4 py-2 text-xs md:text-sm font-semibold rounded-lg border border-transparent text-[var(--muted-foreground,#64748b)] hover:bg-slate-100 dark:hover:bg-slate-800 transition whitespace-nowrap">
+        <span>3. Đối chuẩn Mô hình & Calibration</span>
+      </button>
+      <button onclick="switchTab('tab-risk')" id="btn-tab-risk" class="tab-btn px-4 py-2 text-xs md:text-sm font-semibold rounded-lg border border-transparent text-[var(--muted-foreground,#64748b)] hover:bg-slate-100 dark:hover:bg-slate-800 transition whitespace-nowrap">
+        <span>4. Giám định Cơ sở & Phân luồng</span>
+      </button>
+    </div>
+
+    <!-- TAB 1: TỔNG QUAN & LUỒNG DỮ LIỆU -->
+    <div id="tab-overview" class="tab-content space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Phễu luồng dữ liệu 493k -->
+        <div class="lg:col-span-2 bg-[var(--card,#ffffff)] border border-[var(--card-border,#e2e8f0)] rounded-xl p-5 shadow-sm space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+            <div>
+              <h2 class="font-bold text-base text-[var(--foreground,#0f172a)]">Phễu Sàng lọc & Phân định Cỡ Mẫu (CRISP-DM)</h2>
+              <p class="text-xs text-[var(--muted-foreground,#64748b)]">Quá trình làm sạch chuẩn tắc từ 527.288 hồ sơ thô xuống 493.211 hồ sơ Model-Ready</p>
+            </div>
+            <span class="text-xs font-mono px-2 py-1 bg-slate-100 dark:bg-slate-800 rounded font-semibold text-slate-700 dark:text-slate-300">GroupShuffleSplit 80/20</span>
+          </div>
+
+          <div class="space-y-3">
+            <!-- Step 1 -->
+            <div class="flex items-center gap-4 p-3 bg-slate-50 dark:bg-slate-900/40 rounded-lg border border-slate-200 dark:border-slate-800">
+              <div class="w-10 h-10 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-sm shrink-0">1</div>
+              <div class="flex-1">
+                <div class="flex items-center justify-between">
+                  <span class="font-bold text-sm">Dữ liệu thô ban đầu (Raw Claims)</span>
+                  <span class="font-mono font-bold text-sm text-blue-700 dark:text-blue-300">527.288 hồ sơ</span>
+                </div>
+                <div class="text-xs text-[var(--muted-foreground,#64748b)]">Ngoại trú: 517.737 ca (98,19%) • Nội trú: 9.551 ca (1,81%)</div>
+              </div>
+            </div>
+
+            <!-- Clawback Callout -->
+            <div class="flex items-center gap-3 px-3 py-2 bg-amber-50 dark:bg-amber-950/30 border-l-4 border-amber-500 rounded text-xs text-amber-800 dark:text-amber-200">
+              <span class="font-bold">Nghiệp vụ Clawback:</span> Tách 7.690 hồ sơ chi phí âm ($y < 0$) thu hồi công nợ sang nhánh kiểm toán độc lập. Không áp dụng `abs()`. Bảo toàn 519.598 hồ sơ ($y \ge 0$).
+            </div>
+
+            <!-- Step 2 -->
+            <div class="flex items-center gap-4 p-3 bg-slate-50 dark:bg-slate-900/40 rounded-lg border border-slate-200 dark:border-slate-800">
+              <div class="w-10 h-10 rounded-lg bg-teal-600 text-white flex items-center justify-center font-bold text-sm shrink-0">2</div>
+              <div class="flex-1">
+                <div class="flex items-center justify-between">
+                  <span class="font-bold text-sm">Bộ dữ liệu sạch hợp nhất (Clean Dataset)</span>
+                  <span class="font-mono font-bold text-sm text-teal-700 dark:text-teal-300">519.598 hồ sơ</span>
+                </div>
+                <div class="text-xs text-[var(--muted-foreground,#64748b)]">Bảo toàn 98,54% dữ liệu gốc • Triệt tiêu hoàn toàn khoảng trắng, casing và đơn vị đo lường</div>
+              </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="flex items-center gap-4 p-3 bg-blue-50 dark:bg-blue-950/40 rounded-lg border border-blue-200 dark:border-blue-900">
+              <div class="w-10 h-10 rounded-lg bg-emerald-600 text-white flex items-center justify-center font-bold text-sm shrink-0">3</div>
+              <div class="flex-1">
+                <div class="flex items-center justify-between">
+                  <span class="font-bold text-sm text-emerald-800 dark:text-emerald-200">Tập dữ liệu Mô hình hóa (Model-Ready Dataset)</span>
+                  <span class="font-mono font-bold text-base text-emerald-700 dark:text-emerald-300">493.211 hồ sơ</span>
+                </div>
+                <div class="text-xs text-emerald-700/80 dark:text-emerald-300/80 mt-1 flex flex-wrap gap-x-4">
+                  <span>• Train Set (80%): <strong>395.082 dòng</strong></span>
+                  <span>• Test Set (20%): <strong>98.129 dòng</strong></span>
+                  <span>• Phân rã theo cụm `BeneID` (Chống rò rỉ)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Phân hóa Cơ cấu Chi phí -->
+        <div class="bg-[var(--card,#ffffff)] border border-[var(--card-border,#e2e8f0)] rounded-xl p-5 shadow-sm space-y-4">
+          <div class="border-b border-slate-100 dark:border-slate-800 pb-3">
+            <h2 class="font-bold text-base text-[var(--foreground,#0f172a)]">Phân hóa Ngoại trú vs Nội trú</h2>
+            <p class="text-xs text-[var(--muted-foreground,#64748b)]">Sự bất cân xứng cấu trúc sâu sắc giữa 2 phân hệ</p>
+          </div>
+
+          <div class="space-y-4">
+            <div>
+              <div class="flex justify-between text-xs font-semibold mb-1">
+                <span>Số lượng ca điều trị</span>
+                <span>Ngoại: 98,2% | Nội: 1,8%</span>
+              </div>
+              <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-3 flex overflow-hidden">
+                <div class="bg-blue-600 h-3" style="width: 98.2%"></div>
+                <div class="bg-rose-500 h-3" style="width: 1.8%"></div>
+              </div>
+            </div>
+
+            <div>
+              <div class="flex justify-between text-xs font-semibold mb-1">
+                <span>Tổng dòng tiền bồi hoàn (USD)</span>
+                <span>Ngoại: 64% | Nội: 36%</span>
+              </div>
+              <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-3 flex overflow-hidden">
+                <div class="bg-blue-600 h-3" style="width: 64%"></div>
+                <div class="bg-rose-500 h-3" style="width: 36%"></div>
+              </div>
+            </div>
+
+            <div class="p-3 bg-slate-50 dark:bg-slate-900/50 rounded-lg border border-slate-200 dark:border-slate-800 space-y-2 text-xs">
+              <div class="flex justify-between">
+                <span class="text-[var(--muted-foreground,#64748b)]">Trung vị chi phí:</span>
+                <span class="font-bold font-mono">Ngoại: $80 | Nội: $7.000</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-[var(--muted-foreground,#64748b)]">Trung bình chi phí:</span>
+                <span class="font-bold font-mono text-rose-600">Ngoại: $2.402 | Nội: $88.049</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-[var(--muted-foreground,#64748b)]">Số mã chẩn đoán TB:</span>
+                <span class="font-bold font-mono">Ngoại: 2,61 | Nội: 8,05 mã</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-[var(--muted-foreground,#64748b)]">Tỷ lệ có phẫu thuật:</span>
+                <span class="font-bold font-mono text-teal-600">Ngoại: 0,81% | Nội: 56,88%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: KIỂM TOÁN DỮ LIỆU & EDA LÂM SÀNG -->
+    <div id="tab-audit" class="tab-content hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Bảng 5 kiểm định thống kê y tế -->
+        <div class="bg-[var(--card,#ffffff)] border border-[var(--card-border,#e2e8f0)] rounded-xl p-5 shadow-sm space-y-3">
+          <div class="border-b border-slate-100 dark:border-slate-800 pb-2 flex items-center justify-between">
+            <h2 class="font-bold text-base text-[var(--foreground,#0f172a)]">Bảng 5 Kiểm định Giả thuyết Y tế Sơ bộ (Chương 3)</h2>
+            <span class="text-xs px-2 py-0.5 rounded bg-emerald-100 text-emerald-700 font-bold">p &lt; 10⁻³⁰⁰</span>
+          </div>
+
+          <div class="overflow-x-auto custom-scrollbar">
+            <table class="w-full text-xs text-left border-collapse">
+              <thead>
+                <tr class="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/40 text-[var(--muted-foreground,#64748b)] font-bold">
+                  <th class="py-2 px-2">STT</th>
+                  <th class="py-2 px-3">Tên Kiểm định</th>
+                  <th class="py-2 px-3">Thống kê</th>
+                  <th class="py-2 px-3">p-value</th>
+                  <th class="py-2 px-3">Kết luận khoa học</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                <tr class="hover:bg-slate-50/50">
+                  <td class="py-2 px-2 font-bold text-center">1</td>
+                  <td class="py-2 px-3 font-semibold">Welch's t-test (Log)</td>
+                  <td class="py-2 px-3 font-mono font-bold text-blue-600">t = 312,87</td>
+                  <td class="py-2 px-3 font-mono text-emerald-600">&lt; 10⁻³⁰⁰</td>
+                  <td class="py-2 px-3">Chi phí nội trú cao hơn vượt trội có ý nghĩa thống kê</td>
+                </tr>
+                <tr class="hover:bg-slate-50/50">
+                  <td class="py-2 px-2 font-bold text-center">2</td>
+                  <td class="py-2 px-3 font-semibold">Mann–Whitney U</td>
+                  <td class="py-2 px-3 font-mono font-bold text-blue-600">U = 8,82×10⁸</td>
+                  <td class="py-2 px-3 font-mono text-emerald-600">&lt; 10⁻³⁰⁰</td>
+                  <td class="py-2 px-3">Phân phối phân vị chi phí khác biệt thực chất</td>
+                </tr>
+                <tr class="hover:bg-slate-50/50">
+                  <td class="py-2 px-2 font-bold text-center">3</td>
+                  <td class="py-2 px-3 font-semibold">Chi-Square Independence</td>
+                  <td class="py-2 px-3 font-mono font-bold text-blue-600">χ² = 6.275,02</td>
+                  <td class="py-2 px-3 font-mono text-emerald-600">&lt; 10⁻³⁰⁰</td>
+                  <td class="py-2 px-3">Bác sĩ mổ tập trung cao độ ở các ca nằm viện nội trú</td>
+                </tr>
+                <tr class="hover:bg-slate-50/50">
+                  <td class="py-2 px-2 font-bold text-center">4</td>
+                  <td class="py-2 px-3 font-semibold">Kruskal–Wallis H</td>
+                  <td class="py-2 px-3 font-mono font-bold text-blue-600">H = 4.341,20</td>
+                  <td class="py-2 px-3 font-mono text-emerald-600">&lt; 10⁻³⁰⁰</td>
+                  <td class="py-2 px-3">Tải trọng bệnh đồng mắc làm tăng lũy tiến viện phí</td>
+                </tr>
+                <tr class="hover:bg-slate-50/50">
+                  <td class="py-2 px-2 font-bold text-center">5</td>
+                  <td class="py-2 px-3 font-semibold">Spearman Correlation</td>
+                  <td class="py-2 px-3 font-mono font-bold text-blue-600">ρ = +0,1443</td>
+                  <td class="py-2 px-3 font-mono text-emerald-600">&lt; 10⁻³⁰⁰</td>
+                  <td class="py-2 px-3">Tồn tại tương quan thuận giữa số ngày nằm và chi phí</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Bảng Nghiệm thu Làm sạch Dữ liệu -->
+        <div class="bg-[var(--card,#ffffff)] border border-[var(--card-border,#e2e8f0)] rounded-xl p-5 shadow-sm space-y-3">
+          <div class="border-b border-slate-100 dark:border-slate-800 pb-2">
+            <h2 class="font-bold text-base text-[var(--foreground,#0f172a)]">Bảng Nghiệm thu Làm sạch 6 Trụ cột Kỹ thuật</h2>
+            <p class="text-xs text-[var(--muted-foreground,#64748b)]">Triệt tiêu 100% lỗi cú pháp và bảo toàn trọn vẹn nghiệp vụ</p>
+          </div>
+
+          <div class="space-y-2 text-xs">
+            <div class="flex items-center justify-between p-2.5 bg-slate-50 dark:bg-slate-900/50 rounded-lg">
+              <span class="font-semibold">1. Khoảng trắng thừa (Whitespace)</span>
+              <span class="font-mono font-bold text-emerald-600">1.034.576 trường → 0 lỗi</span>
+            </div>
+            <div class="flex items-center justify-between p-2.5 bg-slate-50 dark:bg-slate-900/50 rounded-lg">
+              <span class="font-semibold">2. Chuẩn hóa in hoa định danh (Casing)</span>
+              <span class="font-mono font-bold text-emerald-600">205.144 ký tự → 100% Upper</span>
+            </div>
+            <div class="flex items-center justify-between p-2.5 bg-slate-50 dark:bg-slate-900/50 rounded-lg">
+              <span class="font-semibold">3. Đơn vị tiền tệ dính ký tự ('USD', 'kg')</span>
+              <span class="font-mono font-bold text-emerald-600">87.804 lượt → Float chuẩn</span>
+            </div>
+            <div class="flex items-center justify-between p-2.5 bg-slate-50 dark:bg-slate-900/50 rounded-lg">
+              <span class="font-semibold">4. Chuỗi ngày cắt cụt & Logic ngày</span>
+              <span class="font-mono font-bold text-emerald-600">Loại 1.755 ca lỗi logic</span>
+            </div>
+            <div class="flex items-center justify-between p-2.5 bg-slate-50 dark:bg-slate-900/50 rounded-lg">
+              <span class="font-semibold">5. Hồ sơ chi phí âm ($y < 0$)</span>
+              <span class="font-mono font-bold text-amber-600">7.690 ca → Nhánh Clawback</span>
+            </div>
+            <div class="flex items-center justify-between p-2.5 bg-blue-50 dark:bg-blue-950/40 rounded-lg font-bold text-blue-800 dark:text-blue-300">
+              <span>Tỷ lệ làm sạch thành công tổng thể</span>
+              <span class="font-mono text-sm">98,54% Dữ liệu hợp lệ</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: ĐỐI CHUẨN MÔ HÌNH & CALIBRATION -->
+    <div id="tab-models" class="tab-content hidden space-y-6">
+      <!-- Bảng đối chuẩn 4 mô hình -->
+      <div class="bg-[var(--card,#ffffff)] border border-[var(--card-border,#e2e8f0)] rounded-xl p-5 shadow-sm space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-slate-100 dark:border-slate-800 pb-3 gap-2">
+          <div>
+            <h2 class="font-bold text-base text-[var(--foreground,#0f172a)]">Bảng 4.2: Đối chuẩn Chi tiết Hiệu năng 4 Mô hình Machine Learning</h2>
+            <p class="text-xs text-[var(--muted-foreground,#64748b)]">Kiểm thử độc lập trên 98.129 hồ sơ Test Set (GroupShuffleSplit chống rò rỉ)</p>
+          </div>
+          <span class="px-2.5 py-1 rounded bg-teal-100 text-teal-800 font-bold text-xs self-start sm:self-auto">XGBoost Dẫn đầu Log • GLM Tốt nhất USD</span>
+        </div>
+
+        <div class="overflow-x-auto custom-scrollbar">
+          <table class="w-full text-xs text-left border-collapse">
+            <thead>
+              <tr class="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/40 text-[var(--muted-foreground,#64748b)] font-bold">
+                <th class="py-2.5 px-3">Mô hình Machine Learning</th>
+                <th class="py-2.5 px-3">RMSE (Log)</th>
+                <th class="py-2.5 px-3">MAE (Log)</th>
+                <th class="py-2.5 px-3">R² (Log)</th>
+                <th class="py-2.5 px-3">MAE (USD)</th>
+                <th class="py-2.5 px-3">WAPE (%)</th>
+                <th class="py-2.5 px-3">Thời gian Train</th>
+                <th class="py-2.5 px-3">Đánh giá vai trò nghiệp vụ</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+              <tr class="hover:bg-slate-50/50">
+                <td class="py-2.5 px-3 font-bold">1. OLS (Log + Smearing)</td>
+                <td class="py-2.5 px-3 font-mono">1,7628</td>
+                <td class="py-2.5 px-3 font-mono">1,2576</td>
+                <td class="py-2.5 px-3 font-mono font-semibold text-slate-700">10,79%</td>
+                <td class="py-2.5 px-3 font-mono">$11.234,50</td>
+                <td class="py-2.5 px-3 font-mono">255,10%</td>
+                <td class="py-2.5 px-3 font-mono font-bold text-blue-600">0,45s</td>
+                <td class="py-2.5 px-3">Mốc tham chiếu chuẩn tắc tuyến tính</td>
+              </tr>
+              <tr class="hover:bg-slate-50/50 bg-amber-50/30 dark:bg-amber-950/20">
+                <td class="py-2.5 px-3 font-bold text-amber-900 dark:text-amber-200">2. GLM Tweedie (p=1.5 USD)</td>
+                <td class="py-2.5 px-3 font-mono text-rose-600">3,7452</td>
+                <td class="py-2.5 px-3 font-mono text-rose-600">2,9812</td>
+                <td class="py-2.5 px-3 font-mono font-bold text-rose-600">-3,5966</td>
+                <td class="py-2.5 px-3 font-mono font-bold text-emerald-600">$7.129,40</td>
+                <td class="py-2.5 px-3 font-mono font-bold text-emerald-600">161,90%</td>
+                <td class="py-2.5 px-3 font-mono">3,18s</td>
+                <td class="py-2.5 px-3 font-medium text-emerald-700">Bảo toàn dòng tiền bồi hoàn thực tế tốt nhất</td>
+              </tr>
+              <tr class="hover:bg-slate-50/50">
+                <td class="py-2.5 px-3 font-bold">3. Random Forest (100 cây)</td>
+                <td class="py-2.5 px-3 font-mono">1,7580</td>
+                <td class="py-2.5 px-3 font-mono">1,2524</td>
+                <td class="py-2.5 px-3 font-mono font-semibold text-blue-600">11,28%</td>
+                <td class="py-2.5 px-3 font-mono">$10.985,20</td>
+                <td class="py-2.5 px-3 font-mono">249,45%</td>
+                <td class="py-2.5 px-3 font-mono text-rose-600">16,61s</td>
+                <td class="py-2.5 px-3">Bắt tương tác phi tuyến, huấn luyện nặng</td>
+              </tr>
+              <tr class="hover:bg-slate-50/50 bg-teal-50/40 dark:bg-teal-950/20">
+                <td class="py-2.5 px-3 font-bold text-teal-800 dark:text-teal-200">4. XGBoost Regressor</td>
+                <td class="py-2.5 px-3 font-mono font-bold text-teal-600">1,7559</td>
+                <td class="py-2.5 px-3 font-mono font-bold text-teal-600">1,2501</td>
+                <td class="py-2.5 px-3 font-mono font-bold text-teal-600">11,47%</td>
+                <td class="py-2.5 px-3 font-mono">$10.870,30</td>
+                <td class="py-2.5 px-3 font-mono">246,85%</td>
+                <td class="py-2.5 px-3 font-mono font-bold text-emerald-600">2,92s</td>
+                <td class="py-2.5 px-3 font-bold text-teal-700">Mô hình tốt nhất trên thang log, tốc độ cao</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Trích dẫn phát biểu then chốt -->
+        <div class="p-3 bg-slate-50 dark:bg-slate-900/40 rounded-lg border border-slate-200 dark:border-slate-800 text-xs space-y-1">
+          <div class="font-bold text-slate-800 dark:text-slate-200">Phát biểu học thuật chuẩn mực của nghiên cứu:</div>
+          <div class="italic text-[var(--muted-foreground,#64748b)]">
+            "XGBoost là mô hình tốt nhất trong bốn mô hình được thử nghiệm, nhưng năng lực dự báo tổng thể còn hạn chế; mô hình phù hợp cho sàng lọc rủi ro và phân luồng hồ sơ, không nên sử dụng đơn lẻ để quyết định mức chi trả hoặc trích lập dự phòng cho các ca chi phí cao."
+          </div>
+        </div>
+      </div>
+
+      <!-- Hai panel: Calibration qua 10 Deciles & Outlier Winsorization -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Calibration Deciles Explorer -->
+        <div class="bg-[var(--card,#ffffff)] border border-[var(--card-border,#e2e8f0)] rounded-xl p-5 shadow-sm space-y-3">
+          <div class="border-b border-slate-100 dark:border-slate-800 pb-2 flex justify-between items-center">
+            <h3 class="font-bold text-sm text-[var(--foreground,#0f172a)]">Kiểm tra Calibration qua 10 Deciles (Bảng 4.5)</h3>
+            <span class="text-xs font-mono text-rose-600 font-bold">D10 = 0,64x (Hụt 36%)</span>
+          </div>
+          <p class="text-xs text-[var(--muted-foreground,#64748b)]">
+            Tỷ lệ Chuẩn hóa = Chi phí Dự báo / Chi phí Thực tế. Từ D1–D9 mô hình dự báo cao hơn thực tế nhằm bù đắp rủi ro cho bất đẳng thức Jensen. Tại Decile 10 (chứa 96,9% dòng tiền), mô hình bị under-prediction.
+          </p>
+
+          <div class="space-y-1.5 pt-2">
+            <div class="flex items-center gap-2 text-xs">
+              <span class="w-8 font-mono font-bold">D1-D3</span>
+              <div class="flex-1 bg-slate-100 dark:bg-slate-800 rounded-full h-3.5 overflow-hidden">
+                <div class="bg-teal-500 h-3.5 rounded-full text-[9px] text-white font-bold flex items-center justify-end pr-1" style="width: 85%">1.25x</div>
+              </div>
+              <span class="w-16 text-right text-teal-600 font-bold text-[10px]">Over (+25%)</span>
+            </div>
+            <div class="flex items-center gap-2 text-xs">
+              <span class="w-8 font-mono font-bold">D4-D6</span>
+              <div class="flex-1 bg-slate-100 dark:bg-slate-800 rounded-full h-3.5 overflow-hidden">
+                <div class="bg-teal-500 h-3.5 rounded-full text-[9px] text-white font-bold flex items-center justify-end pr-1" style="width: 77%">1.12x</div>
+              </div>
+              <span class="w-16 text-right text-teal-600 font-bold text-[10px]">Over (+12%)</span>
+            </div>
+            <div class="flex items-center gap-2 text-xs">
+              <span class="w-8 font-mono font-bold">D7-D9</span>
+              <div class="flex-1 bg-slate-100 dark:bg-slate-800 rounded-full h-3.5 overflow-hidden">
+                <div class="bg-teal-600 h-3.5 rounded-full text-[9px] text-white font-bold flex items-center justify-end pr-1" style="width: 70%">1.04x</div>
+              </div>
+              <span class="w-16 text-right text-teal-600 font-bold text-[10px]">Over (+4%)</span>
+            </div>
+            <div class="flex items-center gap-2 text-xs">
+              <span class="w-8 font-mono font-bold text-rose-600">D10</span>
+              <div class="flex-1 bg-slate-100 dark:bg-slate-800 rounded-full h-3.5 overflow-hidden">
+                <div class="bg-rose-500 h-3.5 rounded-full text-[9px] text-white font-bold flex items-center justify-end pr-1" style="width: 44%">0.64x</div>
+              </div>
+              <span class="w-16 text-right text-rose-600 font-bold text-[10px]">Hụt -36% (Đuôi)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Outlier Winsorization Loss -->
+        <div class="bg-[var(--card,#ffffff)] border border-[var(--card-border,#e2e8f0)] rounded-xl p-5 shadow-sm space-y-3">
+          <div class="border-b border-slate-100 dark:border-slate-800 pb-2">
+            <h3 class="font-bold text-sm text-[var(--foreground,#0f172a)]">So sánh Xử lý Outlier: Log1p vs Winsorization (Bảng 4.6)</h3>
+            <p class="text-xs text-[var(--muted-foreground,#64748b)]">Minh chứng phương pháp luận giữ nguyên 100% dữ liệu gốc</p>
+          </div>
+
+          <div class="p-4 bg-rose-50 dark:bg-rose-950/30 rounded-xl border border-rose-200 dark:border-rose-900 space-y-2">
+            <div class="text-xs font-bold text-rose-800 dark:text-rose-300 uppercase tracking-wider">Hậu quả nghiêm trọng của Winsorization tại P99 ($18.000 USD):</div>
+            <div class="text-2xl font-black text-rose-600">Cắt cụt 81,01% dòng tiền</div>
+            <div class="text-xs text-rose-700/90 dark:text-rose-300/90 leading-relaxed">
+              Hơn <strong>1,125 tỷ USD</strong> nghĩa vụ bồi hoàn bị xóa bỏ giả tạo nếu cắt trần outlier. Quyết định của đề tài kết hợp biến đổi Log1p và hệ số hiệu chỉnh Duan Smearing (1983) giúp bảo toàn trọn vẹn nghĩa vụ tài chính thực tế của quỹ bảo hiểm.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: GIÁM ĐỊNH CƠ SỞ & PHÂN LUỒNG -->
+    <div id="tab-risk" class="tab-content hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Bảng Top 10 Cơ sở Y tế -->
+        <div class="lg:col-span-2 bg-[var(--card,#ffffff)] border border-[var(--card-border,#e2e8f0)] rounded-xl p-5 shadow-sm space-y-3">
+          <div class="border-b border-slate-100 dark:border-slate-800 pb-2 flex justify-between items-center">
+            <div>
+              <h2 class="font-bold text-base text-[var(--foreground,#0f172a)]">Bảng 5.1: Top 10 Cơ sở Y tế có Chi phí Vượt Dự báo Cao nhất</h2>
+              <p class="text-xs text-[var(--muted-foreground,#64748b)]">Sàng lọc dựa trên phần dư Z-Score chuẩn hóa phục vụ thanh tra có trọng tâm</p>
+            </div>
+            <span class="text-xs px-2.5 py-1 rounded bg-rose-100 text-rose-800 font-bold">Z &gt; +3.0</span>
+          </div>
+
+          <div class="overflow-x-auto custom-scrollbar">
+            <table class="w-full text-xs text-left border-collapse">
+              <thead>
+                <tr class="border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/40 text-[var(--muted-foreground,#64748b)] font-bold">
+                  <th class="py-2 px-2">STT</th>
+                  <th class="py-2 px-3">Mã Provider</th>
+                  <th class="py-2 px-3">Chi phí Thực tế</th>
+                  <th class="py-2 px-3">Chi phí Dự báo</th>
+                  <th class="py-2 px-3">Vượt dự báo</th>
+                  <th class="py-2 px-3">Tỷ lệ Vượt</th>
+                  <th class="py-2 px-3">Z-Score</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 dark:divide-slate-800 font-mono">
+                <tr class="hover:bg-rose-50/30">
+                  <td class="py-2 px-2 font-bold text-center">1</td>
+                  <td class="py-2 px-3 font-bold text-blue-600">PRV52338</td>
+                  <td class="py-2 px-3">$30.65M</td>
+                  <td class="py-2 px-3">$1.93M</td>
+                  <td class="py-2 px-3 font-bold text-rose-600">+$28.72M</td>
+                  <td class="py-2 px-3 font-bold">15,88x</td>
+                  <td class="py-2 px-3 font-bold text-rose-600">+15.03</td>
+                </tr>
+                <tr class="hover:bg-rose-50/30">
+                  <td class="py-2 px-2 font-bold text-center">2</td>
+                  <td class="py-2 px-3 font-bold text-blue-600">PRV52298</td>
+                  <td class="py-2 px-3">$25.48M</td>
+                  <td class="py-2 px-3">$1.41M</td>
+                  <td class="py-2 px-3 font-bold text-rose-600">+$24.07M</td>
+                  <td class="py-2 px-3 font-bold">18,05x</td>
+                  <td class="py-2 px-3 font-bold text-rose-600">+13.12</td>
+                </tr>
+                <tr class="hover:bg-rose-50/30">
+                  <td class="py-2 px-2 font-bold text-center">3</td>
+                  <td class="py-2 px-3 font-bold text-blue-600">PRV52285</td>
+                  <td class="py-2 px-3">$22.15M</td>
+                  <td class="py-2 px-3">$1.65M</td>
+                  <td class="py-2 px-3 font-bold text-rose-600">+$20.50M</td>
+                  <td class="py-2 px-3 font-bold">13,42x</td>
+                  <td class="py-2 px-3 font-bold text-rose-600">+11.35</td>
+                </tr>
+                <tr class="hover:bg-rose-50/30">
+                  <td class="py-2 px-2 font-bold text-center">4</td>
+                  <td class="py-2 px-3 font-bold text-blue-600">PRV52254</td>
+                  <td class="py-2 px-3">$19.80M</td>
+                  <td class="py-2 px-3">$1.52M</td>
+                  <td class="py-2 px-3 font-bold text-rose-600">+$18.28M</td>
+                  <td class="py-2 px-3 font-bold">13,03x</td>
+                  <td class="py-2 px-3 font-bold text-rose-600">+10.18</td>
+                </tr>
+                <tr class="hover:bg-rose-50/30">
+                  <td class="py-2 px-2 font-bold text-center">5</td>
+                  <td class="py-2 px-3 font-bold text-blue-600">PRV52302</td>
+                  <td class="py-2 px-3">$18.25M</td>
+                  <td class="py-2 px-3">$1.48M</td>
+                  <td class="py-2 px-3 font-bold text-rose-600">+$16.77M</td>
+                  <td class="py-2 px-3 font-bold">12,33x</td>
+                  <td class="py-2 px-3 font-bold text-rose-600">+9.45</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Khung Phân luồng Giám định 3 Luồng -->
+        <div class="bg-[var(--card,#ffffff)] border border-[var(--card-border,#e2e8f0)] rounded-xl p-5 shadow-sm space-y-3">
+          <div class="border-b border-slate-100 dark:border-slate-800 pb-2">
+            <h2 class="font-bold text-base text-[var(--foreground,#0f172a)]">Khung Phân luồng Giám định 3 Cấp</h2>
+            <p class="text-xs text-[var(--muted-foreground,#64748b)]">Khuyến nghị định hướng tối ưu hóa chi phí vận hành</p>
+          </div>
+
+          <div class="space-y-3">
+            <!-- Luồng Xanh -->
+            <div class="p-3 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900 rounded-lg">
+              <div class="flex items-center justify-between mb-1">
+                <span class="font-bold text-xs text-emerald-800 dark:text-emerald-300">LUỒNG XANH: Tự động phê duyệt (STP)</span>
+                <span class="text-[10px] bg-emerald-200 text-emerald-800 px-1.5 py-0.5 rounded font-bold">Rủi ro thấp</span>
+              </div>
+              <p class="text-xs text-emerald-700 dark:text-emerald-300/80">
+                Áp dụng cho hồ sơ ngoại trú đơn giản (&lt; 300 USD, không thủ thuật, ≤ 2 mã chẩn đoán). Tỷ lệ tự động hóa cụ thể cần kiểm chứng qua A/B test.
+              </p>
+            </div>
+
+            <!-- Luồng Vàng -->
+            <div class="p-3 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900 rounded-lg">
+              <div class="flex items-center justify-between mb-1">
+                <span class="font-bold text-xs text-amber-800 dark:text-amber-300">LUỒNG VÀNG: Hỗ trợ Giám định viên</span>
+                <span class="text-[10px] bg-amber-200 text-amber-800 px-1.5 py-0.5 rounded font-bold">Rủi ro TB</span>
+              </div>
+              <p class="text-xs text-amber-700 dark:text-amber-300/80">
+                Đối soát bán tự động danh mục thuốc, ngày nằm viện nội trú thông thường có gợi ý chênh lệch từ mô hình học máy.
+              </p>
+            </div>
+
+            <!-- Luồng Đỏ -->
+            <div class="p-3 bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900 rounded-lg">
+              <div class="flex items-center justify-between mb-1">
+                <span class="font-bold text-xs text-rose-800 dark:text-rose-300">LUỒNG ĐỎ: Thanh tra Chuyên sâu</span>
+                <span class="text-[10px] bg-rose-200 text-rose-800 px-1.5 py-0.5 rounded font-bold">Z &gt; +3.0</span>
+              </div>
+              <p class="text-xs text-rose-700 dark:text-rose-300/80">
+                Khoanh vùng các cơ sở y tế có chi phí vượt dự báo đột biến. Thanh tra hồ sơ bệnh án gốc trước khi kết luận vi phạm.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER NOTE -->
+    <footer class="text-center text-xs text-[var(--muted-foreground,#64748b)] pt-4 border-t border-[var(--card-border,#e2e8f0)]">
+      Tiểu luận Kết thúc Học phần: <strong>Lập trình Python cho Khoa học Dữ liệu</strong> • Giảng viên hướng dẫn: <strong>ThS. Trần Mạnh Tường</strong> • Khoa Khoa học Dữ liệu - UFM 2026
+    </footer>
+
+  </div>
+
+  <script>
+    function switchTab(tabId) {
+      // Hide all tabs
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      // Show selected tab
+      document.getElementById(tabId).classList.remove('hidden');
+
+      // Update button styles
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('bg-blue-600', 'text-white', 'shadow-sm');
+        btn.classList.add('text-[var(--muted-foreground,#64748b)]');
+      });
+      const activeBtn = document.getElementById('btn-' + tabId);
+      if (activeBtn) {
+        activeBtn.classList.remove('text-[var(--muted-foreground,#64748b)]');
+        activeBtn.classList.add('bg-blue-600', 'text-white', 'shadow-sm');
+      }
+    }
+  </script>
+</body>
+</html>
